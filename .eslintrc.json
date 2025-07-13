@@ -1,0 +1,7 @@
+{
+  "extends": ["next/core-web-vitals", "plugin:mdx/recommended", "plugin:react/recommended"],
+  "plugins": ["mdx", "react"],
+  "rules": {
+    "react/prop-types": "off"
+  }
+}
