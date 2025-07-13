@@ -1,0 +1,44 @@
+# Module: Artificial Intelligence (AI)
+
+**The AI module is the central nervous system for all intelligent features within Webizen. It provides a unified interface for interacting with a wide range of AI models and services, both local and cloud-based.**
+
+This module is designed to be a flexible "router" for AI tasks, allowing the user and other modules to leverage powerful AI capabilities in a consistent and privacy-preserving manner.
+
+## Purpose and Functionality
+
+The primary purpose of the `ai` module is to abstract the complexity of different AI providers and models, offering a single point of entry for tasks like text generation, text-to-speech, and semantic search.
+
+**Core Functions:**
+-   **Model Routing:** It manages connections to multiple LLM backends, including:
+    -   **Local Models:** Ollama, LM Studio, and other local servers.
+    -   **Cloud Models:** OpenAI, Grok, and Gemini.
+    The module routes requests to the appropriate model based on user configuration or the specific requirements of a task.
+-   **Text-to-Speech (TTS) Management:** It integrates deeply with the **Chatterbox** engine (`modules/ai/chatterbox/`) as the default, high-quality TTS provider. It also manages connections to other services like the Web Speech API, Google Cloud TTS, and AWS Polly.
+-   **Retrieval-Augmented Generation (RAG):** For LLM queries, the module can interface with the `vectordb` module to fetch relevant documents from the user's personal knowledge base. This context is then injected into the LLM prompt to provide more accurate and personalized responses.
+-   **Cognitive AI Principles:** The module's design is guided by the principles of the W3C Cognitive AI Community Group (CogAI), aiming for transparency and explainability in AI-driven actions. Rule-based systems (`N3Logic`, `RIF`) can be used alongside LLMs to provide a verifiable layer of reasoning.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/ai/index.js`
+-   **Sub-modules**: Contains specific implementations for different services, such as `src/modules/ai/chatterbox/` and `src/modules/ai/ollama/`.
+-   **UI Component**: The primary user interface for managing AI settings and interactions is `src/components/AI.js`.
+-   **Configuration**: API keys, model endpoints, and user preferences are stored in `config/webizen-config-v0.26.json` and `ai/configs/`.
+-   **Dependencies**:
+    -   `services/webizen-api`: Specifically the `/ai/query` endpoint, which this module powers.
+    -   `modules/vectordb`: For retrieving context for RAG.
+    -   `services/config`: To load API keys and model configurations.
+    -   `services/eventBus`: To listen for tasks that require AI processing.
+
+### Example Flow: AI-Assisted Email Response
+
+1.  The `email` module receives a new email and determines, based on a user-defined rule, that it requires an AI-generated draft response.
+2.  It emits an event to the event bus: `eventBus.emit('ai:generate_text_request', { task: 'email_draft', context: { originalEmail: '...' }, model: 'ollama' })`.
+3.  The `ai` module's `handleEvent` function catches this request.
+4.  It queries the `vectordb` module with the content of the original email to find relevant past conversations or documents (RAG).
+5.  It constructs a detailed prompt containing the original email text and the retrieved context.
+6.  It sends this prompt to the specified `ollama` sub-module.
+7.  The `ollama` sub-module makes the API call to the local Ollama server.
+8.  Once the response is generated, the `ai` module emits a new event: `eventBus.emit('ai:generate_text_response', { task: 'email_draft', draft: '...' })`.
+9.  The `email` module listens for this event and populates the reply window with the AI-generated draft.
+
+This workflow demonstrates how the `ai` module acts as a powerful, centralized service, enabling other modules to easily integrate intelligent features without needing to know the specifics of any single AI model.

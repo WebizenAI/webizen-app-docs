@@ -1,0 +1,42 @@
+# Module: Email
+
+**The Email module integrates traditional email functionality directly into the Webizen platform. It acts as a full-featured email client, capable of connecting to standard IMAP and SMTP servers, while enhancing the experience with powerful AI-driven features.**
+
+This module serves as a vital bridge, allowing users to manage their conventional email communications from within their secure, decentralized Webizen environment.
+
+## Purpose and Functionality
+
+The primary goal of the `email` module is to provide a secure and intelligent interface for managing traditional email, augmented with the unique capabilities of the Webizen ecosystem.
+
+**Core Functions:**
+-   **Standard Email Client:** Connects to any IMAP server to fetch emails and uses SMTP to send them. It supports standard features like folders, attachments, and rich HTML email rendering.
+-   **AI-Driven Responses:** This is the module's standout feature. Users can define rules to trigger automated, AI-generated responses. For example, a user can type `[ollama] research (topic)` in a draft, and the `ai` module will be invoked to research the topic and replace the tag with a generated summary before sending.
+-   **Multilingual Templates:** Provides a library of email templates for common situations, available in all 15 supported languages, managed by the `i18n` module.
+-   **Semantic Integration:** Email content, such as attachments or important conversations, can be easily saved as structured RDF data to the user's Solid Pod or Semantic Library for long-term knowledge management.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/email/index.js`
+-   **UI Component**: The main email client interface is rendered by `src/components/Email.js`.
+-   **Core Libraries**:
+    -   `imap-simple`: For connecting to and fetching mail from IMAP servers.
+    -   `nodemailer`: For sending email via SMTP servers.
+-   **Ontology**: `ontologies/email-v1.ttl` defines the schema for representing email messages and their metadata as RDF.
+-   **Dependencies**:
+    -   `modules/ai`: Crucial for the AI-driven response generation. The `email` module dispatches events that the `ai` module listens for.
+    -   `modules/i18n`: For loading and managing multilingual email templates.
+    -   `services/config`: To securely store the user's IMAP/SMTP credentials.
+    -   `services/webizen-api`: Specifically the `/email/respond` endpoint, which this module powers.
+
+### Example Flow: AI-Assisted Response
+
+1.  A user is composing a reply to an email in the `Email.js` component.
+2.  In the body of the email, they type the command: "Here is the summary you asked for: `[ollama] summarize the following text: {original_email_body}`".
+3.  Before sending, the user clicks a "Process AI Commands" button.
+4.  The UI dispatches an event: `eventBus.emit('email:process_ai_command', { emailId: '...', draftContent: '...' })`.
+5.  The `email` module's `handleEvent` function catches this. It parses the draft content, finds the `[ollama]` command, and makes a request to the `ai` module.
+6.  The `ai` module processes the request, gets the summary from the Ollama model, and returns the result.
+7.  The `email` module replaces the command tag in the draft with the generated summary and updates the UI.
+8.  The user can then review the final text and click "Send."
+
+This workflow demonstrates how Webizen can augment traditional tools like email with powerful, locally-run AI capabilities, providing intelligent assistance without sending the user's private data to a third-party service.

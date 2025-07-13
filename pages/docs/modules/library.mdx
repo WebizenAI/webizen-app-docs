@@ -1,0 +1,40 @@
+# Module: Semantic Library
+
+**The Semantic Library module provides a powerful, unified interface for searching and exploring all of the user's personal data. It acts as a personal knowledge management system, allowing users to find resources based on their content, context, and relationships.**
+
+This module transforms the user's collection of documents, bookmarks, media, and notes from a simple set of files into a rich, queryable semantic graph.
+
+## Purpose and Functionality
+
+The primary goal of the `library` module is to make all of the user's data discoverable, regardless of its original source or format.
+
+**Core Functions:**
+-   **Faceted Search:** Provides a traditional search interface with filters (facets) based on RDF metadata. Users can filter results by data type (e.g., `foaf:Person`, `work:Task`), creation date, tags, and other structured properties.
+-   **Vector-Based Semantic Search:** This is the library's most advanced feature. It integrates with the `vectordb` module to allow users to search based on the *meaning* of their query, not just keywords. For example, a user could search for "that meeting about Q3 budget forecasts" and find the relevant video, even if those exact words don't appear in the title.
+-   **Spatio-Temporal Context:** Allows users to filter and search for resources based on their connection to a specific time or place. For example, "show me all photos I took in Paris in the summer of 2024."
+-   **Unified View:** Presents results from all parts of the user's digital life—bookmarks, local files, hypermedia, chat logs—in a single, coherent interface.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/library/index.js`
+-   **UI Component**: The main search and results interface is rendered by `src/components/Library.js`.
+-   **Ontologies**: It utilizes all available ontologies to understand the data, with a particular focus on `SemBookmarks-v1.ttl` and `spatiotemporal-v1.ttl`.
+-   **Dependencies**:
+    -   `services/quadstore`: The primary source for faceted search. All SPARQL queries for filtering are run against the Quadstore.
+    -   `modules/vectordb`: Essential for performing semantic searches. The library sends search queries to the vector database to find semantically similar content.
+    -   `modules/discovery`: For extending searches beyond the user's local data to the broader P2P network.
+    -   `modules/timeline`: For visualizing spatio-temporal search results.
+
+### Example Flow: A Hybrid Search
+
+1.  A user types "discussions about supply chain ethics from last year" into the `Library.js` search interface.
+2.  The UI dispatches an event: `eventBus.emit('library:search', { query: '...', filters: { year: '2024' } })`.
+3.  The `library` module's `handleEvent` function receives the request.
+4.  It performs two search operations in parallel:
+    a.  **Faceted Query:** It constructs a SPARQL query to send to the `quadstore` service to find all resources created in the year 2024.
+    b.  **Vector Query:** It sends the text "discussions about supply chain ethics" to the `vectordb` module to get a list of semantically similar resource URIs.
+5.  **Result Combination:** The `library` module takes the intersection of the two result sets—resources that are both from 2024 *and* are semantically related to the query.
+6.  For each result, it fetches the full RDF description from the Quadstore to display a rich snippet in the UI.
+7.  The results are sent back to the `Library.js` component, which renders them for the user.
+
+This hybrid approach combines the precision of structured, faceted search with the power of fuzzy, semantic search, providing a uniquely effective way for users to navigate their personal data.

@@ -1,0 +1,18 @@
+# Platform Overview
+
+Webizen is not a single application but a cohesive ecosystem that spans multiple platforms. This multi-platform architecture is designed to provide users with a seamless experience, whether they are at their desk or on the go.
+
+The ecosystem consists of three primary components, each with a distinct role and set of capabilities:
+
+1.  **[Web Extension](./web-extension)**: Your lightweight, everyday interface to the Webizen network, living directly within your browser.
+2.  **[Desktop Application](./desktop-app)**: The powerful core of your personal Webizen environment, acting as a local server, P2P node, and secure data hub.
+3.  **[Mobile App](./mobile-app)**: Your on-the-go companion, securely connecting to your Desktop App for access to your data and social features.
+
+## The Synergistic Relationship
+
+These three components are designed to work together seamlessly. The Web Extension provides convenience, the Desktop App provides power and sovereignty, and the Mobile App provides portability.
+
+-   The **Web Extension** relies on the **Desktop App** for its connection to the P2P network and for access to the user's full data pod.
+-   The **Mobile App** securely connects to the **Desktop App** via a private network tunnel (Tailscale), ensuring that your data never has to be stored on a third-party cloud server to be accessible on your phone.
+
+This architecture ensures that the user's data remains under their control, primarily on their own hardware, while still being accessible from anywhere. The following sections provide a more detailed look at the specific architecture and capabilities of each platform.

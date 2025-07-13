@@ -1,0 +1,41 @@
+import { Card, Cards } from 'nextra/components'
+
+# Welcome to the Webizen Developer Documentation
+
+**Webizen is a decentralized operating system for the web, designed to empower users with data ownership, privacy, and a modular, extensible application environment.**
+
+This documentation provides a comprehensive guide to understanding, using, and extending the Webizen platform. Whether you're looking to build a new decentralized application, contribute to the core platform, or simply understand the technical underpinnings of Webizen, you're in the right place.
+
+<Cards>
+  <Card title="Introduction" href="/docs/introduction/overview" />
+  <Card title="Getting Started" href="/docs/getting-started/installation" />
+  <Card title="Core Concepts" href="/docs/core-concepts/architecture" />
+  <Card title="API Reference" href="/docs/api-reference/webizen-api" />
+  <Card title="Cryptography" href="/docs/cryptography/specification" />
+  <Card title="Contributing" href="/docs/contributing/guidelines" />
+</Cards>
+
+## About Webizen
+
+Webizen is built on a foundation of cutting-edge decentralized technologies, including:
+
+* **SolidOS:** For decentralized identity (WebID) and personal data storage in Pods.
+* **IPFS:** For content-addressed, peer-to-peer file storage and sharing.
+* **eCash:** As a native, peer-to-peer electronic cash system for the digital age.
+* **Post-Quantum Cryptography:** Utilizing SPHINCS+ and other advanced cryptographic primitives to ensure long-term data security.
+
+The platform is designed to be modular and extensible, allowing developers to create and integrate new features as self-contained "modules." This approach fosters a vibrant ecosystem of community-driven development and innovation.
+
+## How to Use These Docs
+
+This documentation is organized into several key sections, designed to help you find the information you need quickly and efficiently.
+
+* The **Introduction** provides a high-level overview of the project's goals and architecture.
+* **Getting Started** contains practical guides for setting up your development environment and building your first module.
+* **Core Concepts** offers a deep dive into the fundamental components of Webizen.
+* The **Guides** section provides step-by-step tutorials for common development tasks.
+* The **API Reference** contains detailed documentation for all of Webizen's internal and external APIs.
+* The **Cryptography** section outlines the security specifications and policies of the platform.
+* **Contributing** provides guidelines for how to get involved in the development of Webizen.
+
+We are excited to have you on this journey to build a more decentralized, user-centric web. Let's get started!

@@ -1,0 +1,49 @@
+# Module: Job Scheduling
+
+**The Job Scheduling module provides a backend service for scheduling and executing tasks at a specific time or on a recurring interval. It acts as a simple, persistent cron-like system for the Webizen platform.**
+
+This module is essential for features that require time-based automation, such as sending calendar reminders or triggering automatic backups.
+
+## Purpose and Functionality
+
+The primary goal of the `jobs` module is to provide a reliable mechanism for scheduling future actions without requiring the main application to be constantly active or focused on the task.
+
+**Core Functions:**
+-   **Task Scheduling:** It exposes a simple API for other modules to schedule a job. A job consists of a target `event` to be dispatched and a `schedule` (either a specific `Date` object or a cron-style string for recurring tasks).
+-   **Persistence:** Scheduled jobs are persisted to the local Quadstore. This ensures that if the user closes and reopens the Webizen application, the scheduled jobs are not lost and will still execute at their designated times.
+-   **Event Dispatching:** When a scheduled time is reached, the `jobs` module does not execute the task logic itself. Instead, it simply dispatches the predefined event onto the main `eventBus`. The module that originally scheduled the job is responsible for listening for this event and performing the actual work.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/jobs/index.js`
+-   **Core Libraries**:
+    -   `node-schedule`: A flexible library for scheduling jobs in Node.js, supporting specific dates, recurring intervals, and cron-style scheduling. The specification refers to this as `xaitask`.
+-   **Dependencies**:
+    -   `services/quadstore`: To persist the list of scheduled jobs.
+    -   `services/eventBus`: To dispatch the event when a job's scheduled time arrives.
+
+### Example Flow: Scheduling a Calendar Reminder
+
+1.  When a user creates a new event in the `calendar` module and sets a 15-minute reminder, the `calendar` module needs to schedule this reminder.
+2.  The `calendar` module calculates the exact time the reminder should be sent (e.g., `event.startTime - 15 minutes`).
+3.  It then dispatches an event to schedule the job:
+    ```javascript
+    eventBus.emit('jobs:schedule', {
+      id: `reminder-for-${event.id}`, // A unique ID for the job
+      schedule: reminderTime, // The calculated Date object
+      event: {
+        type: 'calendar:reminder',
+        payload: {
+          eventId: event.id,
+          title: event.title
+        }
+      }
+    });
+    ```
+4.  The `jobs` module's `handleEvent` function receives this request.
+5.  It saves the job details (ID, schedule, and the target event object) to the Quadstore.
+6.  It then uses `node-schedule` to schedule a callback for the specified `reminderTime`.
+7.  At the scheduled time, the `node-schedule` callback fires. The `jobs` module's callback function then dispatches the stored event onto the main event bus: `eventBus.emit('calendar:reminder', { eventId: '...', title: '...' })`.
+8.  The `calendar` module, which is always listening for its own reminder events, catches this event and triggers a desktop notification to be shown to the user.
+
+This decoupled architecture allows any module to schedule time-based actions without having to manage the complexities of timers and persistence itself.

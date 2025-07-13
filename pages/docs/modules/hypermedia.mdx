@@ -1,0 +1,47 @@
+# Module: Hypermedia
+
+**The Hypermedia module is responsible for processing and enriching media files (audio and video) with a rich, semantic layer of metadata. It transforms standard media into "hypermedia," where the content is deeply indexed, searchable, and linked to other data in the user's knowledge graph.**
+
+This module is central to Webizen's goal of creating a more intelligent and context-aware data environment.
+
+## Purpose and Functionality
+
+The primary purpose of the `hypermedia` module is to analyze and annotate media files to make their content more accessible and useful.
+
+**Core Functions:**
+-   **Multilingual Transcription:** It uses an AI speech-to-text engine (like a local Whisper model via the `ai` module) to generate a time-coded transcript of any audio or video file. This transcript can then be translated into multiple languages by the `translator` module.
+-   **SPARQL-MM Integration:** It uses the **SPARQL-MM** ontology (`ontologies/sparql-mm-v1.ttl`) to create detailed, timeline-based metadata. This includes:
+    -   **Voice/Music Characteristics:** Identifying different speakers, types of music, or sound events.
+    -   **Object Descriptions:** Tagging objects or concepts that appear or are mentioned at specific points in the media.
+-   **Vector Embedding:** The generated transcripts and metadata are processed by the `ai` module to create vector embeddings, which are then stored in the `vectordb` (ChromaDB). This enables powerful semantic search over the content of the media (e.g., "find all videos where I discussed humanitarian logistics").
+-   **Hypermedia Package Creation:** This module provides the core logic for bundling the original media file, its transcripts, timeline metadata, and other assets into a single, shareable [Hypermedia Content Package](../core-concepts/hypermedia-packages).
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/hypermedia/index.js`
+-   **UI Component**: The interface for uploading, processing, and viewing hypermedia is rendered by `src/components/Media.js` and `src/components/Hypermedia.js`.
+-   **Core Libraries**:
+    -   Relies on AI services exposed by the `ai` module.
+-   **Ontology**: `ontologies/sparql-mm-v1.ttl` is the primary schema for the generated metadata.
+-   **Dependencies**:
+    -   `modules/ai`: Essential for transcription, translation, and generating vector embeddings.
+    -   `modules/timeline`: For visualizing the time-coded metadata alongside the media playback.
+    -   `modules/vectordb`: To store the generated embeddings for semantic search.
+    -   `services/ipfs`: To store the final media files and hypermedia packages.
+
+### Example Flow: Processing a New Video
+
+1.  A user uploads a video file (`interview.mp4`) through the `Media.js` component.
+2.  The UI dispatches an event: `eventBus.emit('hypermedia:process_file', { file: ... })`.
+3.  The `hypermedia` module's `handleEvent` function receives the request.
+4.  It sends a request to the `ai` module to transcribe the audio from the video file.
+5.  Once the transcript is returned, it sends further requests to the `ai` module to:
+    a.  Translate the transcript into the user's preferred languages.
+    b.  Analyze the transcript to identify key entities and concepts.
+    c.  Generate vector embeddings for the transcript text.
+6.  The `hypermedia` module constructs a detailed RDF graph using the SPARQL-MM ontology, linking the transcript, translations, and identified entities to specific timestamps in the video.
+7.  This new RDF data is saved to the user's Solid Pod via the `solidos.js` service.
+8.  The vector embeddings are saved to the `vectordb` module.
+9.  Finally, the user can choose to bundle all of these assets into a signed Hypermedia Content Package for sharing.
+
+This process transforms a simple video file into a rich, searchable, and multilingual knowledge asset.

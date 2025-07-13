@@ -1,0 +1,6 @@
+export default {
+  overview: "Platform Overview",
+  "web-extension": "Web Extension",
+  "desktop-app": "Desktop Application",
+  "mobile-app": "Mobile App"
+}

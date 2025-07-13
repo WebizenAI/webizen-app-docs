@@ -1,0 +1,67 @@
+# ODRL: Defining Rights and Policies
+
+A key challenge in any data sharing system, especially a decentralized one, is managing permissions. Who is allowed to do what with a given piece of content? How can we define these rules in a way that is both clear to humans and understandable by machines?
+
+Webizen solves this by using the **Open Digital Rights Language (ODRL)**, a W3C standard for expressing policies, licenses, and agreements. ODRL provides a flexible vocabulary for defining who can perform what actions on a given asset, under what conditions.
+
+## The Role of ODRL in Webizen
+
+In Webizen, ODRL is the foundation for creating clear, enforceable policies for all types of content and interactions.
+
+- **Access Control:** ODRL policies define who can `read`, `write`, or `share` a resource. This is used for everything from controlling access to a private photo album to managing permissions in a collaborative project.
+- **Monetization:** ODRL can express commercial terms. For example, a policy can state that the action `play` is permitted for a video file, but only after the `pay` action has been completed with a specific eCash amount.
+- **Obligations & Duties:** Policies aren't just about permissions; they can also define obligations. For example, a license for a piece of software might grant the `use` permission, but with the duty to provide `attribution` to the original author.
+- **Parental Controls:** The parental controls module uses ODRL to define rules for ward accounts, such as prohibiting access to content with a certain rating or limiting chat interactions to a specific set of approved contacts.
+
+## The Structure of an ODRL Policy
+
+An ODRL policy is structured around a few core concepts, which are expressed as RDF triples.
+
+- **Policy:** The container for a set of rules.
+- **Permission:** A rule that allows an action.
+- **Prohibition:** A rule that prevents an action.
+- **Duty:** An obligation that must be fulfilled in conjunction with a permission.
+- **Asset:** The digital resource the policy applies to (e.g., a video, a document).
+- **Action:** The specific activity being governed (e.g., `play`, `copy`, `print`).
+- **Assigner & Assignee:** The parties involved (who is granting the permission and who is receiving it).
+- **Constraint:** A condition that must be met for the rule to apply (e.g., a time limit, a payment amount).
+
+### A Practical Example: Paid Media Access
+
+Let's expand on the example from the previous section. A creator wants to sell access to a high-resolution photograph contained within a `Hypermedia Content Package`. The ODRL policy within that package might look like this (in simplified Turtle syntax):
+
+```turtle
+@prefix odrl: [http://www.w3.org/ns/odrl/2/](http://www.w3.org/ns/odrl/2/) .
+@prefix ex: [http://example.org/](http://example.org/) .
+
+ex:photo_policy a odrl:Offer ;
+    odrl:target ex:high_res_photo.jpg ;
+    odrl:assigner [https://creator.example.com/profile#me](https://creator.example.com/profile#me) ;
+    
+    # Define the permission to view the photo
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee [https://viewer.example.com/profile#me](https://viewer.example.com/profile#me) ;
+        odrl:action odrl:display ;
+        
+        # Add a constraint: this permission is only valid after payment
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:paymentStatus ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "Paid" .
+        ]
+    ] ;
+
+    # Define the payment duty
+    odrl:duty [
+        a odrl:Duty ;
+        odrl:action odrl:pay ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:payAmount ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "1000.00"^^xsd:decimal ;
+            odrl:unit [https://e.cash](https://e.cash) .
+        ]
+    ] .

@@ -1,0 +1,47 @@
+# Module: Access Control
+
+**The Access Control module is the primary gatekeeper for the Webizen platform. It is responsible for enforcing the project's unique access policy, which is tied to the eCash network and the concept of "Obligation Costs."**
+
+This module ensures that the project remains sustainable by requiring a modest contribution from users who have the means, while keeping it accessible to others.
+
+## Purpose and Functionality
+
+The core purpose of the `access` module is to verify that a user meets the criteria for using the platform before granting them full access. It is one of the first modules to be initialized on startup.
+
+Its primary functions are:
+
+1.  **Wallet Verification**: It interacts with the `cashtab` module to check the user's eCash wallet.
+2.  **Policy Enforcement**: It checks the user's wallet balance against the threshold defined in `config/webizen-config-v0.26.json` (e.g., > 2,000,000 XEC).
+3.  **Payment/Token Check**: If the user's balance exceeds the threshold, it verifies if they have either:
+    * Made a one-time payment for the current major version (e.g., 150,000 XEC).
+    * Hold a valid SLP "access" token in their wallet.
+4.  **Obligation Cost Tracking**: It queries the local Quadstore to check the project's overall "Obligation Cost" status. If the costs have been met, the access check is bypassed, and the platform becomes obligation-free for all users.
+5.  **Event Dispatching**: Based on the outcome, it dispatches an event to the system:
+    * `access:granted`: If the user meets the criteria, allowing the UI to unlock full functionality.
+    * `access:denied`: If the user does not meet the criteria, prompting the UI to display the access control panel.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/access/index.js`
+-   **UI Component**: The user-facing elements for this module are rendered by `src/components/Access.js`, which provides the interface for wallet connection, payment, and status display.
+-   **Dependencies**:
+    -   `modules/cashtab`: For all wallet interactions, including checking balances and verifying SLP tokens.
+    -   `services/chronik`: Used by the `cashtab` module to get indexed information about the eCash blockchain.
+    -   `services/quadstore`: To query the current status of the project's obligation costs.
+    -   `services/config`: To read the access control parameters from the configuration file.
+    -   `services/eventBus`: To dispatch `access:granted` or `access:denied` events.
+
+### Example Flow
+
+1.  Webizen starts up.
+2.  The `moduleManager` initializes the `access` module.
+3.  The `access` module requests the user's eCash address from the `cashtab` module.
+4.  It uses `chronik` (via `cashtab`) to fetch the wallet balance and a list of SLP tokens.
+5.  It checks if the balance is above the limit.
+    -   If **No**, it dispatches `access:granted`.
+    -   If **Yes**, it checks for the payment transaction or the required SLP token.
+        -   If found, it dispatches `access:granted`.
+        -   If not found, it dispatches `access:denied`.
+6.  The main UI component listens for these events and renders the appropriate view.
+
+This module is a critical example of how Webizen can implement complex, blockchain-based business logic in a decentralized and transparent manner.

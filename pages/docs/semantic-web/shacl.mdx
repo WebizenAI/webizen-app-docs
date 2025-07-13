@@ -1,0 +1,41 @@
+# SHACL: Validating the Data Fabric
+
+While RDF and RDFS provide a flexible way to structure and describe data, they don't enforce the *shape* or *constraints* of that data. For example, RDFS can't specify that a `work:Project` must have at least one `dct:creator` or that a `work:Task` must have exactly one `work:dueDate`.
+
+This is where the **Shapes Constraint Language (SHACL)** comes in. SHACL is a W3C standard for validating RDF graphs against a set of conditions. In Webizen, SHACL is the primary mechanism for ensuring data quality, consistency, and integrity.
+
+## The Role of SHACL in Webizen
+
+SHACL allows us to define "shapes" that our data must conform to. A shape is a collection of constraints that are applied to a specific set of RDF nodes.
+
+- **Data Validation:** Before new data is accepted into a user's Solid Pod or used by a module, it can be validated against a SHACL shape. If the data doesn't conform to the shape, it's rejected, preventing corrupt or incomplete information from entering the system.
+- **Form Generation:** SHACL shapes can be used to automatically generate user interface forms for creating and editing data, ensuring that the user provides all the necessary information in the correct format.
+- **API Contracts:** Shapes act as a formal contract for our APIs. They define exactly what constitutes a valid data payload for a given operation.
+
+### A Practical Example: Validating an Agreement
+
+In Webizen, agreements are a critical piece of data. We need to ensure that every agreement is well-formed. The `agreements-v1.shacl.ttl` file defines the shape for a valid agreement.
+
+Here is a simplified example of a SHACL shape for an agreement:
+
+```turtle
+@prefix sh: [http://www.w3.org/ns/shacl#](http://www.w3.org/ns/shacl#) .
+@prefix ex: [http://example.org/ontology#](http://example.org/ontology#) .
+@prefix xsd: [http://www.w3.org/2001/XMLSchema#](http://www.w3.org/2001/XMLSchema#) .
+
+# Defines the shape for a resource of type ex:Agreement
+ex:AgreementShape
+  a sh:NodeShape ;
+  sh:targetClass ex:Agreement ;
+  sh:property [
+    sh:path ex:proposer ;           # The path to the property to constrain
+    sh:nodeKind sh:IRI ;            # The value must be an IRI (a link to another resource)
+    sh:minCount 1 ;                 # There must be at least one proposer
+    sh:maxCount 1 ;                 # There can be at most one proposer
+  ] ;
+  sh:property [
+    sh:path ex:terms ;
+    sh:datatype xsd:string ;        # The value must be a string
+    sh:minLength 10 ;               # The terms must be at least 10 characters long
+    sh:minCount 1 ;
+  ] .
