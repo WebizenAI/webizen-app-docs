@@ -28,7 +28,7 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
       - name: Install PNPM
-        run: corepack enable && corepack prepare pnpm@latest --activate
+        run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm install
       - name: Build static site
