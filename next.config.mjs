@@ -1,38 +1,16 @@
-import nextra from 'nextra';
+import withNextra from 'nextra-theme-docs';
 
-const isGithubActions = process.env.GITHUB_ACTIONS || false;
-
-let assetPrefix = '';
-let basePath = '';
-
-if (isGithubActions) {
-  // trim off `<owner>/`
-  const repo = process.env.GITHUB_REPOSITORY.replace(/.*?\//, '');
-
-  assetPrefix = `/${repo}/`;
-  basePath = `/${repo}`;
-}
-
-// Initialize Nextra with the theme and theme configuration
-const withNextra = nextra({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.jsx',
-});
-
-// Export the final Next.js configuration, wrapped by the Nextra plugin
+// The theme plugin now wraps the entire Next.js config.
+// The themeConfig is automatically picked up from theme.config.jsx
 export default withNextra({
-  // Configure for static export
+  // Configure for static export for GitHub Pages
   output: 'export',
-  
-  // Set the base path for GitHub Pages
-  basePath: basePath,
-  assetPrefix: assetPrefix,
 
+  // The basePath and assetPrefix are typically handled by the GitHub Pages action.
+  // Manually setting them can sometimes cause conflicts.
+  
   // Disable image optimization for static export
   images: {
     unoptimized: true,
   },
-
-  // Transpile the theme package to prevent ESM import errors
-  transpilePackages: ['nextra-theme-docs'],
 });
