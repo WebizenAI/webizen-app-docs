@@ -1,7 +1,12 @@
-import withNextra from 'nextra-theme-docs';
+import nextra from 'nextra';
 
-// The theme plugin now wraps the entire Next.js config.
-// The themeConfig is automatically picked up from theme.config.jsx
+// Initialize Nextra with the theme and theme configuration
+const withNextra = nextra({
+  theme: 'nextra-theme-docs',
+  themeConfig: './theme.config.jsx',
+});
+
+// Export the final Next.js configuration, wrapped by the Nextra plugin
 export default withNextra({
   // Configure for static export for GitHub Pages
   output: 'export',
@@ -13,4 +18,8 @@ export default withNextra({
   images: {
     unoptimized: true,
   },
+
+  // This is the crucial fix:
+  // It forces Next.js to re-compile the theme package, fixing the import error.
+  transpilePackages: ['nextra-theme-docs'],
 });
