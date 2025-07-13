@@ -1,4 +1,4 @@
-import nextra from 'nextra';
+import withNextra from 'nextra-theme-docs';
 
 const isGithubActions = process.env.GITHUB_ACTIONS || false;
 
@@ -13,12 +13,14 @@ if (isGithubActions) {
   basePath = `/${repo}`;
 }
 
-const withNextra = nextra({
+// Initialize Nextra with the theme and theme configuration
+const nextraPlugin = withNextra({
   theme: 'nextra-theme-docs',
   themeConfig: './theme.config.jsx',
 });
 
-export default withNextra({
+// Export the final Next.js configuration
+export default nextraPlugin({
   // Configure for static export
   output: 'export',
   
