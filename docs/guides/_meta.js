@@ -1,6 +1,0 @@
-export default {
-  "creating-a-module": "Creating a Module",
-  "working-with-data": "Working with Data",
-  "hypermedia-packages": "Using Hypermedia Packages",
-  debugging: "Debugging Guide"
-}
