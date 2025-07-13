@@ -8,5 +8,7 @@ const withNextra = nextra({
 export default withNextra({
   output: 'export',
   images: { unoptimized: true },
-  reactStrictMode: true
+  reactStrictMode: true,
+  basePath: '/webizen-app-docs',
+  assetPrefix: '/webizen-app-docs/',
 })
