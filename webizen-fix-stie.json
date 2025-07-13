@@ -1,0 +1,180 @@
+{
+  "problem": "The WebizenAI/webizen-app-docs repository builds successfully but results in a blank page when deployed on GitHub Pages (https://webizenai.github.io/webizen-app-docs/). Configuration files use .mjs (ES Modules) instead of .js (CommonJS), and the documentation is in the docs/ folder.",
+  "solution": {
+    "overview": "Update next.config.mjs and theme.config.mjs to use ES Module syntax, configure for static export with the correct base path (/webizen-app-docs), verify the docs/ folder structure, and redeploy to GitHub Pages. Ensure compatibility with a JavaScript-only (non-TypeScript) Next.js + Nextra setup.",
+    "updated_files": [
+      {
+        "path": "next.config.mjs",
+        "content": "import withNextra from 'nextra';\n\nexport default withNextra({\n  theme: 'nextra-theme-docs',\n  themeConfig: './theme.config.mjs',\n  standalone: true\n})({\n  output: 'export',\n  basePath: '/webizen-app-docs',\n  trailingSlash: true,\n  images: {\n    unoptimized: true\n  }\n});",
+        "description": "Configures Next.js for Nextra with ES Module syntax, sets basePath to /webizen-app-docs for GitHub Pages, enables static export, and disables image optimization."
+      },
+      {
+        "path": "theme.config.mjs",
+        "content": "export default {\n  logo: 'Webizen Documentation',\n  project: {\n    link: 'https://github.com/WebizenAI/webizen-app-docs'\n  },\n  search: {\n    provider: 'pagefind'\n  },\n  footer: {\n    text: 'WebizenAI © 2025'\n  },\n  basePath: '/webizen-app-docs'\n};",
+        "description": "Configures the Nextra Docs theme with ES Module syntax, includes GitHub Pages base path for links, and sets up Pagefind search."
+      }
+    ],
+    "steps": [
+      {
+        "step": "Replace Configuration Files",
+        "instructions": [
+          "Replace the existing `next.config.mjs` in the repository root with the provided content.",
+          "Replace or create `theme.config.mjs` in the repository root with the provided content.",
+          "Delete any `next.config.js` or `theme.config.js` files to avoid conflicts."
+        ]
+      },
+      {
+        "step": "Verify package.json",
+        "instructions": [
+          "Ensure `package.json` includes the following dependencies and scripts:",
+          {
+            "name": "webizen-app-docs",
+            "version": "0.1.0",
+            "private": true,
+            "type": "module",
+            "scripts": {
+              "dev": "next dev",
+              "dev:turbopack": "next dev --turbopack",
+              "build": "next build",
+              "start": "next start",
+              "lint": "next lint",
+              "lint:fix": "next lint --fix",
+              "deploy": "gh-pages -d out"
+            },
+            "dependencies": {
+              "next": "^15.0.1",
+              "nextra": "^4.2.17",
+              "nextra-theme-docs": "^4.2.17",
+              "react": "^18.3.1",
+              "react-dom": "^18.3.1"
+            },
+            "devDependencies": {
+              "autoprefixer": "^10.4.20",
+              "eslint": "^9.12.0",
+              "eslint-config-next": "^15.0.1",
+              "eslint-plugin-mdx": "^3.1.4",
+              "eslint-plugin-react": "^7.37.1",
+              "gh-pages": "^6.2.0",
+              "postcss": "^8.4.47",
+              "tailwindcss": "^3.4.13"
+            }
+          },
+          "Add `\"type\": \"module\"` to `package.json` if not already present to enable ES Modules.",
+          "Run `pnpm install` to install dependencies (use PNPM as recommended by Nextra)."
+        ]
+      },
+      {
+        "step": "Verify File Structure",
+        "instructions": [
+          "Ensure the `docs/` folder contains MDX files (e.g., `docs/index.mdx`, `docs/WebizenAppSpec.mdx`).",
+          "Add YAML frontmatter to MDX files for proper routing:",
+          {
+            "example": "---\ntitle: Webizen App Spec\nslug: webizen-app-spec\n---\n# Webizen App Spec\nContent here..."
+          },
+          "Create or update `docs/_meta.json` for navigation:",
+          {
+            "example": {
+              "index": "Home",
+              "webizen-app-spec": { "title": "Webizen App Spec", "type": "page" },
+              "webizen-aios": { "title": "Webizen AIOS Platform", "type": "page" }
+            }
+          },
+          "Ensure no spaces in file names (e.g., rename `Webizen App Spec.mdx` to `WebizenAppSpec.mdx`).",
+          "If using App Router, create `app/[[...mdxPath]]/page.js` for Nextra’s content directory:",
+          {
+            "content": "import { createContentlayer } from 'nextra/contentlayer';\n\nexport default createContentlayer({\n  contentDirPath: './docs'\n});"
+          }
+        ]
+      },
+      {
+        "step": "Handle Static Assets",
+        "instructions": [
+          "Place images in `public/images/` (e.g., `public/images/WebizenLogo.png`).",
+          "Reference images in MDX with the base path:",
+          {
+            "example": "![Webizen Logo](/webizen-app-docs/images/WebizenLogo.png)"
+          },
+          "Alternatively, create a custom Image component in `components/Image.js`:",
+          {
+            "content": "export default function Image({ src, alt = 'Image' }) {\n  return <img src={`/webizen-app-docs${src}`} alt={alt} />;\n}"
+          },
+          "Use in MDX:",
+          {
+            "example": "import Image from '../components/Image';\n<Image src=\"/images/WebizenLogo.png\" alt=\"Webizen Logo\" />"
+          },
+          "Ensure `styles/globals.css` includes Tailwind directives:",
+          {
+            "content": "@tailwind base;\n@tailwind components;\n@tailwind utilities;"
+          },
+          "Verify `tailwind.config.js`:",
+          {
+            "content": "export default {\n  content: [\n    './pages/**/*.{js,jsx,md,mdx}',\n    './docs/**/*.{js,jsx,md,mdx}',\n    './components/**/*.{js,jsx}',\n    './theme.config.mjs'\n  ],\n  theme: { extend: {} },\n  plugins: []\n};"
+          }
+        ]
+      },
+      {
+        "step": "Deploy to GitHub Pages",
+        "instructions": [
+          "Run `pnpm build` to generate the `out/` folder.",
+          "Run `pnpm deploy` to push the `out/` folder to the `gh-pages` branch.",
+          "In GitHub repository Settings > Pages, set the source to `gh-pages` branch, root directory.",
+          "Verify the site at `https://webizenai.github.io/webizen-app-docs/`.",
+          "Check browser DevTools (F12) > Console and Network tabs for 404 errors or failed asset loads."
+        ]
+      },
+      {
+        "step": "Test Locally",
+        "instructions": [
+          "Run `pnpm build && npx serve out` to test the static site locally.",
+          "Visit `http://localhost:3000/webizen-app-docs` to simulate GitHub Pages.",
+          "Check for console errors or missing assets."
+        ]
+      },
+      {
+        "step": "Debugging",
+        "instructions": [
+          "If the site is still blank, inspect `out/` folder for `index.html` and `_next/` assets.",
+          "Run `pnpm build -- --debug` for detailed build logs.",
+          "Create a minimal `docs/index.mdx`:",
+          {
+            "content": "# Welcome to Webizen\nThis is a test page."
+          },
+          "Update `docs/_meta.json`:",
+          {
+            "content": { "index": "Home" }
+          },
+          "Redeploy and check for errors."
+        ]
+      },
+      {
+        "step": "Webizen-Specific Checks",
+        "instructions": [
+          "Verify MDX files for valid JavaScript snippets (e.g., for Webizen apps or RDF):",
+          {
+            "example": "```javascript\nconst webizenApp = {\n  init: () => console.log('Webizen App initialized')\n};\n```"
+          },
+          "Check for Mermaid diagrams if used:",
+          {
+            "example": "import { Mermaid } from 'nextra/components';\n<Mermaid chart={`\n  graph TD\n  A[Client] --> B[Webizen Server]\n`} />"
+          },
+          "Ensure links use relative paths or slugs:",
+          {
+            "example": "[Webizen 3.0](./webizen-3-0)"
+          }
+        ]
+      }
+    ],
+    "notes": [
+      "The repository uses ES Modules (.mjs files), so all configurations use `import`/`export` syntax.",
+      "The blank page is likely due to a base path mismatch or incorrect static export.",
+      "If errors persist, share console logs from the deployed site or `pnpm build -- --debug` output.",
+      "The `docs/` folder suggests App Router with Nextra’s content directory convention."
+    ]
+  },
+  "metadata": {
+    "repository": "https://github.com/WebizenAI/webizen-app-docs",
+    "docs_path": "https://github.com/WebizenAI/webizen-app-docs/tree/main/docs",
+    "deployed_url": "https://webizenai.github.io/webizen-app-docs/",
+    "date": "2025-07-14T06:00:00+10:00"
+  }
+}

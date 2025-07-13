@@ -1,14 +1,12 @@
-import nextra from 'nextra'
-
-const withNextra = nextra({
+import nextra from 'nextra';
+export default nextra({
   theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.jsx',
-})
-
-export default withNextra({
+  themeConfig: './theme.config.mjs'
+})({
   output: 'export',
-  images: { unoptimized: true },
-  reactStrictMode: true,
   basePath: '/webizen-app-docs',
-  assetPrefix: '/webizen-app-docs/',
-})
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  }
+});
