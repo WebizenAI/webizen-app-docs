@@ -13,9 +13,8 @@ if (isGithubActions) {
   basePath = `/${repo}`;
 }
 
-// Initialize Nextra with the theme and theme configuration
+// Initialize Nextra with the theme configuration
 const nextraPlugin = withNextra({
-  theme: 'nextra-theme-docs',
   themeConfig: './theme.config.jsx',
 });
 
@@ -32,4 +31,7 @@ export default nextraPlugin({
   images: {
     unoptimized: true,
   },
+
+  // Add this to fix the ESM import error in the dependency
+  transpilePackages: ['nextra-theme-docs'],
 });
