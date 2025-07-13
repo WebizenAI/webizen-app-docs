@@ -1,4 +1,5 @@
-export default {
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.mjs'
-};
+import { withDocs } from 'nextra-theme-docs';
+
+export default withDocs({
+  themeConfig: './theme.config.jsx'
+});
