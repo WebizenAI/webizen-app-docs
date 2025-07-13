@@ -1,4 +1,4 @@
-import withNextra from 'nextra-theme-docs';
+import nextra from 'nextra';
 
 const isGithubActions = process.env.GITHUB_ACTIONS || false;
 
@@ -13,13 +13,14 @@ if (isGithubActions) {
   basePath = `/${repo}`;
 }
 
-// Initialize Nextra with the theme configuration
-const nextraPlugin = withNextra({
+// Initialize Nextra with the theme and theme configuration
+const withNextra = nextra({
+  theme: 'nextra-theme-docs',
   themeConfig: './theme.config.jsx',
 });
 
-// Export the final Next.js configuration
-export default nextraPlugin({
+// Export the final Next.js configuration, wrapped by the Nextra plugin
+export default withNextra({
   // Configure for static export
   output: 'export',
   
@@ -32,6 +33,6 @@ export default nextraPlugin({
     unoptimized: true,
   },
 
-  // Add this to fix the ESM import error in the dependency
+  // Transpile the theme package to prevent ESM import errors
   transpilePackages: ['nextra-theme-docs'],
 });
