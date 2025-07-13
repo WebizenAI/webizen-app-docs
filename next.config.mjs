@@ -1,14 +1,11 @@
-import withNextra from 'nextra';
-
-export default withNextra({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.mjs',
-  standalone: true
-})({
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   output: 'export',
   basePath: '/webizen-app-docs',
   trailingSlash: true,
   images: {
     unoptimized: true
   }
-});
+};
+
+export default nextConfig;

@@ -1,5 +1,47 @@
 {
   "index": "Home",
-  "webizen-app-spec": { "title": "Webizen App Spec", "type": "page" },
-  "webizen-aios": { "title": "Webizen AIOS Platform", "type": "page" }
+  "introduction": {
+    "title": "Introduction",
+    "type": "directory"
+  },
+  "getting-started": {
+    "title": "Getting Started",
+    "type": "directory"
+  },
+  "core-concepts": {
+    "title": "Core Concepts",
+    "type": "directory"
+  },
+  "api-reference": {
+    "title": "API Reference",
+    "type": "directory"
+  },
+  "cryptography": {
+    "title": "Cryptography",
+    "type": "directory"
+  },
+  "deployment": {
+    "title": "Deployment",
+    "type": "directory"
+  },
+  "modules": {
+    "title": "Modules",
+    "type": "directory"
+  },
+  "platforms": {
+    "title": "Platforms",
+    "type": "directory"
+  },
+  "semantic-web": {
+    "title": "Semantic Web",
+    "type": "directory"
+  },
+  "contributing": {
+    "title": "Contributing",
+    "type": "directory"
+  },
+  "support": {
+    "title": "Support",
+    "type": "directory"
+  }
 }
