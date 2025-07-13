@@ -32,11 +32,11 @@ jobs:
       - name: Check PNPM version
         run: pnpm --version
       - name: Install dependencies
-        run: pnpm install
+        run: npm exec pnpm install
       - name: Build static site
         env:
           NEXT_PUBLIC_BASE_PATH: /webizen-app-docs
-        run: pnpm build
+        run: npm exec pnpm build
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
