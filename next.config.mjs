@@ -4,6 +4,3 @@ export default nextra()({
   output: 'export',
   images: { unoptimized: true }
 })
-
-
-  

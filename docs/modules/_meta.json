@@ -1,17 +1,11 @@
 {
   "index": "Module Overview",
-  "---": {
-    "type": "separator",
-    "title": "Core Modules"
-  },
+  "separator-core": { "type": "separator", "title": "Core Modules" },
   "access": "Access Control",
   "security": "Security",
   "cashtab": "Cashtab (eCash)",
   "solid": "SolidOS & Pods",
-  "-1--": {
-    "type": "separator",
-    "title": "Feature Modules"
-  },
+  "separator-feature": { "type": "separator", "title": "Feature Modules" },
   "adp": "ADP & Identity",
   "ai": "AI & Chatterbox",
   "calendar": "Calendar",
