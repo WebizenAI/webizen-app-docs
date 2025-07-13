@@ -1,0 +1,43 @@
+# Module: Settings
+
+**The Settings module provides the central user-facing interface for configuring the Webizen platform. It allows users to manage everything from cosmetic preferences like UI themes to sensitive data such as eCash claims, Verifiable Credentials (VCs), and API keys.**
+
+This module acts as the main control panel, giving users granular control over their application experience and data.
+
+## Purpose and Functionality
+
+The primary goal of the `settings` module is to provide a unified and secure location for all user-configurable options.
+
+**Core Functions:**
+-   **eCash & SLP Token Management:** Provides an interface for users to manage their eCash wallet claims and view their SLP token balances, interacting with the `cashtab` module.
+-   **Verifiable Credential Management:** Allows users to import, view, and manage their VCs. This is where a user could, for example, store a VC representing their university degree or a professional certification.
+-   **Theme Management:** Users can select and preview different UI themes for the application, including the default light/dark modes and specialized themes like `pages-ui` and `work_ui`.
+-   **Language Preferences:** Integrates with the `i18n` module to allow users to select their preferred display language for the entire application.
+-   **API Key and OAuth Token Management:** Provides a secure interface for users to add, edit, and remove OAuth tokens (for services like GitHub/GitLab) and API keys (for services like OpenAI).
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/settings/index.js`
+-   **UI Component**: The comprehensive settings panel is rendered by `src/components/Settings.js`.
+-   **Core Libraries**:
+    -   `@cashtab/wallet-lib`: Used via the `cashtab` module.
+    -   `@digitalbazaar/vc`: For parsing and managing Verifiable Credentials.
+-   **Ontology**: `ontologies/settings-v1.ttl` defines the RDF schema for storing user settings, including language preferences and theme choices, in their Solid Pod.
+-   **Dependencies**:
+    -   `modules/cashtab`: For displaying wallet information and managing claims.
+    -   `modules/i18n`: For setting the application's language.
+    -   `modules/work`: The `work_ui` theme is managed here.
+    -   `services/solidos`: To persist all settings to the user's Solid Pod.
+    -   `services/webizen-api`: Specifically the `/settings/configure` endpoint, which this module powers.
+
+### Example Flow: Changing a UI Theme
+
+1.  The user navigates to the Settings panel and selects the "Appearance" tab.
+2.  The `Settings.js` component fetches the available themes (e.g., `light`, `dark`, `pages-ui`) from the configuration.
+3.  The user clicks on the `pages-ui` theme. A live preview is shown.
+4.  The user clicks "Save." The UI dispatches an event: `eventBus.emit('settings:update', { theme: 'pages-ui' })`.
+5.  The `settings` module's `handleEvent` function receives the request.
+6.  It creates or updates an RDF triple in the user's settings graph, for example: `<#me> <ex:uiTheme> "pages-ui" .`.
+7.  It saves the updated settings graph to the user's Solid Pod via the `solidos.js` service.
+8.  It dispatches a `settings:theme_changed` event on the event bus.
+9.  The main application component listens for this event and dynamically applies the new CSS styles, changing the application's appearance.

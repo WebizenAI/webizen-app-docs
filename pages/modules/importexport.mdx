@@ -1,0 +1,37 @@
+# Module: Import & Export
+
+**The Import & Export module provides the functionality for users to export their data from Webizen into portable, standardized formats, and to import data from external sources.**
+
+This module is fundamental to Webizen's promise of data portability and freedom from platform lock-in. It ensures that users can always take their data with them, in its entirety.
+
+## Purpose and Functionality
+
+The primary goal of the `importexport` module is to provide a robust and secure mechanism for moving data in and out of the Webizen ecosystem.
+
+**Core Functions:**
+-   **Data Export:** Allows users to select a portion of their data (e.g., a single project, their entire address book, or their full Solid Pod) and export it.
+-   **Standard Formats:** Data is exported into standard, interoperable formats. Structured RDF data is typically exported as **RDF/Turtle (`.ttl`)** or **OWL**, while larger collections that include binary files are packaged into **HDF5** archives or encrypted `.zip` files.
+-   **Secure Packaging:** Exported archives are always encrypted with **AES** and signed with **SPHINCS+** or **ECDSA**, depending on the content. This ensures the backup is both private and tamper-proof.
+-   **Data Import:** Provides functionality to import data from external RDF or HDF5 files, validating the data against known ontologies and SHACL shapes before integrating it into the user's local data stores.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/importexport/index.js`
+-   **UI Component**: The user interface for import and export operations is typically integrated into the `Settings` and `Backups` components.
+-   **Ontology**: `ontologies/importexport-v1.ttl` defines the metadata used to describe the contents of an exported archive.
+-   **Dependencies**:
+    -   `services/quadstore` & `services/solidos`: To read the data that needs to be exported.
+    -   `services/crypto`: Essential for encrypting and signing the exported archives.
+    -   `h5wasm` & `archiver`: Libraries used for creating the HDF5 or ZIP package files.
+
+### Example Flow: Exporting a Single Project
+
+1.  A user navigates to a project in the `Work` module and selects the "Export Project" option.
+2.  The UI dispatches an event: `eventBus.emit('export:request', { resourceUri: '...', format: 'hdf5' })`.
+3.  The `importexport` module's `handleEvent` function receives this request.
+4.  It queries the `quadstore` for all RDF triples related to the project, including all its tasks, contributors, and linked assets.
+5.  It gathers all associated binary files (e.g., documents stored on IPFS) that are linked in the project's RDF graph.
+6.  It uses the `h5wasm` library to create a new HDF5 file and packages all the RDF data and binary files into it.
+7.  It then calls the `crypto` service to **encrypt** the HDF5 file with AES.
+8.  Finally, it calls the `crypto` service again to **sign** the encrypted HDF5 file with SPHINCS+.
+9.  The module then prompts the user to save the final, secure `.h5.enc` file to their local disk. This file can now be safely stored or shared, with the guarantee that its contents are private and its origin is verifiable.

@@ -1,0 +1,26 @@
+# RDF and RDFS: The Data Fabric of Webizen
+
+At the heart of Webizen's data architecture lies the **Resource Description Framework (RDF)**, a W3C standard for modeling information. Unlike traditional databases that store data in rigid tables, RDF represents information as a graph, creating a flexible, interconnected "data fabric."
+
+This approach is fundamental to Webizen's ability to handle diverse, user-owned data in a decentralized and interoperable way.
+
+## The Core Concept: Triples
+
+All information in RDF is stored in simple statements called **triples**. A triple consists of a **subject**, a **predicate**, and an **object**.
+
+-   **Subject**: The thing being described (e.g., a user, a document, a project).
+-   **Predicate**: The property or relationship being described (e.g., `has name`, `created by`, `is a member of`).
+-   **Object**: The value of the property or the thing the subject is related to (e.g., "Alice", another user's WebID, "Project Alpha").
+
+For example, to state that a user named Alice created a document, we would have the following triples:
+
+```turtle
+@prefix ex: [http://example.org/](http://example.org/) .
+@prefix foaf: [http://xmlns.com/foaf/0.1/](http://xmlns.com/foaf/0.1/) .
+@prefix dct: [http://purl.org/dc/terms/](http://purl.org/dc/terms/) .
+
+ex:alice a foaf:Person ;
+         foaf:name "Alice" .
+
+ex:myDocument a foaf:Document ;
+             dct:creator ex:alice .

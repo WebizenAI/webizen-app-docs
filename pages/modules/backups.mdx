@@ -1,0 +1,46 @@
+# Module: Secure Backups
+
+**The Backups module provides a robust and secure system for creating, managing, and restoring backups of the user's entire Webizen data set. It ensures data durability and provides a crucial recovery path in case of device failure or data corruption.**
+
+This module integrates strong encryption and post-quantum signatures with flexible storage options to give users full control over their data resilience strategy.
+
+## Purpose and Functionality
+
+The primary goal of the `backups` module is to give users peace of mind by allowing them to create secure, portable, and verifiable copies of their personal data pod.
+
+**Core Functions:**
+-   **Comprehensive Archiving:** The module can package the user's entire local Quadstore and the contents of their Solid Pod into a single, compressed archive file.
+-   **Strong Encryption:** Before storage, every backup archive is encrypted with **AES**, using a key derived from the user's master password. This ensures that the backup content is unreadable to anyone without the user's credentials.
+-   **Post-Quantum Integrity:** After encryption, the backup file is signed using **SPHINCS+**. This signature guarantees that the backup has not been tampered with and confirms its authenticity upon restoration.
+-   **Multi-Destination Support:** Users can choose to store their encrypted and signed backups in multiple locations for redundancy:
+    -   **IPFS:** For decentralized, resilient P2P storage.
+    -   **Google Drive:** For convenient cloud storage (requires user authentication).
+    -   **Local File System:** For offline backups to an external hard drive or other local storage.
+    -   **Remote Solid Pod:** For syncing to another trusted Pod provider.
+-   **Scheduled Backups:** Integrates with the `jobs` module to allow users to schedule automatic, recurring backups.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/backups/index.js`
+-   **UI Component**: The interface for creating, managing, and restoring backups is rendered by `src/components/Backups.js`.
+-   **Core Libraries**:
+    -   `googleapis`: For authenticating with and uploading to Google Drive.
+    -   `archiver`: A Node.js library for creating compressed archives.
+-   **Ontology**: `ontologies/timeline-v1.ttl` is used to create a timeline of backup events, providing a clear history of when backups were made.
+-   **Dependencies**:
+    -   `services/crypto`: Essential for both the AES encryption of the backup content and the SPHINCS+ signing of the final archive.
+    -   `services/quadstore` & `services/solidos`: To read the data that needs to be backed up.
+    -   `services/ipfs`: To upload the final backup file to the IPFS network.
+    -   `modules/jobs`: For scheduling automatic backups.
+
+### Example Flow: Creating a Manual Backup to IPFS
+
+1.  A user navigates to the `Backups.js` component and clicks "Create New Backup."
+2.  They select "IPFS" as the destination.
+3.  The UI dispatches an event: `eventBus.emit('backups:create', { destination: 'ipfs' })`.
+4.  The `backups` module's `handleEvent` function receives the request.
+5.  It reads the entire content of the user's Quadstore and Solid Pod and uses the `archiver` library to create a single compressed file (e.g., `backup.zip`).
+6.  It calls the `crypto` service to encrypt the `backup.zip` file with AES, creating `backup.zip.enc`.
+7.  It then calls the `crypto` service again to sign the encrypted file (`backup.zip.enc`) with SPHINCS+, creating a `signature.json` object.
+8.  The module uploads both `backup.zip.enc` and `signature.json` to IPFS via the `ipfs` service, getting back two CIDs.
+9.  Finally, it creates a new RDF resource using the `timeline-v1.ttl` ontology to log the backup event, storing the CIDs and timestamp in the user's Solid Pod. The user can now see this new backup in their history and can share its CID securely.

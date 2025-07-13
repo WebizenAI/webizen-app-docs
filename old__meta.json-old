@@ -1,0 +1,122 @@
+{
+  "index": { "title": "Introduction", "type": "page" },
+  "getting-started": { "title": "Getting Started", "type": "page" },
+  "platforms": { "title": "Platform Guides", "type": "page" },
+  "core-concepts": { "title": "Core Concepts", "type": "page" },
+  "guides": { "title": "Developer Guides", "type": "page" },
+  "semantic-web": { "title": "Semantic Web & Logic", "type": "page" },
+  "modules": { "title": "Module Reference", "type": "page" },
+  "api-reference": { "title": "API Reference", "type": "page" },
+  "cryptography": { "title": "Cryptography & Security", "type": "page" },
+  "deployment": { "title": "Deployment", "type": "page" },
+  "contributing": { "title": "Contributing", "type": "page" },
+  "support": { "title": "Support", "type": "page" }
+}
+
+// docs/introduction/_meta.json
+{
+  "overview": "Overview",
+  "technology-stack": "Technology Stack"
+}
+
+// docs/getting-started/_meta.json
+{
+  "installation": "Installation",
+  "local-development": "Local Development"
+}
+
+// docs/platforms/_meta.json
+{
+  "overview": "Platform Overview",
+  "web-extension": "Web Extension",
+  "desktop-app": "Desktop Application",
+  "mobile-app": "Mobile App"
+}
+
+// docs/core-concepts/_meta.json
+{
+  "architecture": "Architecture",
+  "modules": "Modular System",
+  "identity-and-auth": "Identity & Authentication",
+  "data-storage": "Data Storage Model",
+  "p2p-networking": "P2P Networking",
+  "hypermedia-packages": "Hypermedia Packages"
+}
+
+// docs/guides/_meta.json
+{
+  "creating-a-module": "Creating a Module",
+  "working-with-data": "Working with Data",
+  "hypermedia-packages": "Using Hypermedia Packages",
+  "debugging": "Debugging Guide"
+}
+
+// docs/semantic-web/_meta.json
+{
+  "rdf-schema": "RDF & RDFS",
+  "shacl": "SHACL for Validation",
+  "rules": "Rule Systems (RIF/SWRL/N3Logic)",
+  "odrl": "ODRL for Rights Management"
+}
+
+// docs/modules/_meta.json
+{
+  "index": "Module Overview",
+  "---": {
+    "type": "separator",
+    "title": "Core Modules"
+  },
+  "access": "Access Control",
+  "security": "Security",
+  "cashtab": "Cashtab (eCash)",
+  "solid": "SolidOS & Pods",
+  "---": {
+    "type": "separator",
+    "title": "Feature Modules"
+  },
+  "adp": "ADP & Identity",
+  "ai": "AI & Chatterbox",
+  "calendar": "Calendar",
+  "chat": "Chat",
+  "community": "Community",
+  "discovery": "P2P Discovery",
+  "editor": "Editor",
+  "email": "Email",
+  "gitmark": "Gitmark",
+  "hypermedia": "Hypermedia",
+  "i18n": "Internationalization",
+  "library": "Semantic Library",
+  "work": "Work Management"
+}
+
+// docs/api-reference/_meta.json
+{
+  "webizen-api": "Webizen Core API",
+  "internal-rpc-apis": "Internal RPC APIs",
+  "crypto-service": "Crypto Service",
+  "solidos-service": "SolidOS Service"
+}
+
+// docs/cryptography/_meta.json
+{
+  "specification": "Cryptography Specification"
+}
+
+// docs/deployment/_meta.json
+{
+  "electron": "Building for Electron",
+  "mobile": "Building for Mobile",
+  "docs-setup": "Docs Site Setup",
+  "github-actions": "Docs Deployment"
+}
+
+// docs/contributing/_meta.json
+{
+  "guidelines": "Contribution Guidelines",
+  "code-of-conduct": "Code of Conduct"
+}
+
+// docs/support/_meta.json
+{
+  "troubleshooting": "Troubleshooting"
+}

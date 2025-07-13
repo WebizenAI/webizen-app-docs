@@ -1,0 +1,135 @@
+# Webizen Core API Reference
+
+The Webizen Core API is the primary interface for interacting with the Webizen background process. It provides a secure set of endpoints for modules and userland applications to access core functionalities like P2P networking, data storage, and cryptographic operations.
+
+## Overview
+
+-   **Location**: The API is implemented in `services/webizen-api.js`.
+-   **Transport**: It is exposed by the local server in the Desktop Application over a secure WebSocket connection, typically on `wss://localhost:8080`.
+-   **Authentication**: Every endpoint requires cryptographic authentication. The specific signature scheme (e.g., SPHINCS+, Ed25519, ECDSA) depends on the endpoint's security requirements.
+
+---
+
+## Module Endpoints
+
+### Register a Module
+
+Registers a new module with the Module Manager.
+
+-   **Endpoint**: `POST /modules/register`
+-   **Authentication**: `SPHINCS+` or `Ed25519`
+-   **Description**: Allows a dynamically loaded application or module to register its core functions with the system's event bus and service locator.
+-   **Parameters**:
+    -   `id` (string): A unique identifier for the module (e.g., `my-custom-module`).
+    -   `version` (string): The version of the module (e.g., `1.0.0`).
+    -   `init` (function): The initialization function.
+    -   `handleEvent` (function): The function to handle events from the event bus.
+    -   `getData` (function): The function to provide data to other modules.
+
+### Unregister a Module
+
+Removes a module from the Module Manager.
+
+-   **Endpoint**: `POST /modules/unregister`
+-   **Authentication**: `SPHINCS+` or `Ed25519`
+-   **Description**: Deactivates a module, removing it from the event loop.
+-   **Parameters**:
+    -   `id` (string): The identifier of the module to unregister.
+
+---
+
+## Resource & Data Endpoints
+
+### Load HDF5 Resource
+
+Loads a large, binary HDF5 resource package.
+
+-   **Endpoint**: `POST /resources/load`
+-   **Authentication**: `SPHINCS+` or `AES`
+-   **Description**: Used to load large data packages (e.g., for AI models, large datasets) into the application. The resource is fetched via IPFS or WebTorrent.
+-   **Parameters**:
+    -   `uri` (string): The URI of the resource (e.g., an IPFS CID).
+    -   `type` (string): The type of resource to provide context for loading.
+
+### Sync Data
+
+Syncs a data object across a user's devices.
+
+-   **Endpoint**: `POST /sync/data`
+-   **Authentication**: `SPHINCS+` or `AES`
+-   **Description**: Pushes a data object to the user's other devices via the secure Tailscale network.
+-   **Parameters**:
+    -   `data` (object): The JSON or binary data to be synced.
+    -   `type` (string): A descriptor for the type of data being synced.
+
+### Save to Editor
+
+Saves a file from the editor to the user's Solid Pod.
+
+-   **Endpoint**: `POST /editor/save`
+-   **Authentication**: `SPHINCS+` or `AES`
+-   **Description**: Persists the content of a file from the Monaco Editor to the user's authoritative data store.
+-   **Parameters**:
+    -   `file` (object): The file object, including its content.
+    -   `path` (string): The destination path within the user's Solid Pod.
+
+---
+
+## Feature-Specific Endpoints
+
+### Query AI
+
+Sends a prompt to one of the configured AI models.
+
+-   **Endpoint**: `POST /ai/query`
+-   **Authentication**: `SPHINCS+` or `AES`
+-   **Description**: Provides a unified interface for querying different AI models (Ollama, Grok, etc.), potentially using Retrieval-Augmented Generation (RAG) with the provided context.
+-   **Parameters**:
+    -   `model` (string): The identifier of the AI model to query.
+    -   `prompt` (string): The user's prompt.
+    -   `context` (object): Additional data to be used as context for the query.
+
+### Create Work Item
+
+Creates a new project or task in the Work Management module.
+
+-   **Endpoint**: `POST /work/create`
+-   **Authentication**: `SPHINCS+` or `ECDSA`
+-   **Description**: Adds a new project or task to the user's work graph.
+-   **Parameters**:
+    -   `projectData` (object): An RDF-compliant object representing the new project or task.
+
+### Trigger AI Email Response
+
+Instructs the Email module to generate a response using an AI.
+
+-   **Endpoint**: `POST /email/respond`
+-   **Authentication**: `SPHINCS+` or `AES`
+-   **Description**: Used to automate email replies based on predefined conditions.
+-   **Parameters**:
+    -   `emailId` (string): The ID of the email to respond to.
+    -   `condition` (string): The condition that triggered the response.
+    -   `model` (string): The AI model to use for generating the response.
+
+### Mark Git Commit
+
+Links a git commit to a blockchain transaction.
+
+-   **Endpoint**: `POST /gitmark/commit`
+-   **Authentication**: `SPHINCS+` or `ECDSA`
+-   **Description**: Creates an immutable link between a software commit and an eCash transaction, often used for bounties or timestamping.
+-   **Parameters**:
+    -   `commitHash` (string): The hash of the git commit.
+    -   `platform` (string): The git platform (e.g., 'github', 'gitlab').
+    -   `txId` (string): The eCash transaction ID.
+
+### Submit Community Contribution
+
+Submits a new contribution to the Community module.
+
+-   **Endpoint**: `POST /community/contribute`
+-   **Authentication**: `SPHINCS+` or `ECDSA`
+-   **Description**: Allows users to submit translations, code, or issues, creating a verifiable record of their contribution.
+-   **Parameters**:
+    -   `contribution` (object): An object containing the details of the contribution.
+    -   `type` (string): The type of contribution (e.g., 'translation', 'code', 'issue').

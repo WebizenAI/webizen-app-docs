@@ -1,0 +1,49 @@
+import { Mermaid } from 'nextra/components'
+
+# Platform: Web Extension
+
+The Webizen Web Extension is the user's most frequent point of interaction with the ecosystem. It lives directly in the user's primary browser (e.g., Chrome, Firefox) and provides a convenient, lightweight interface for core social and data management tasks.
+
+## Role and Purpose
+
+The primary goal of the Web Extension is to integrate Webizen's capabilities seamlessly into the user's existing web browsing experience. It acts as a "remote control" and a window into the more powerful **Desktop Application**, which serves as the user's local data and P2P server.
+
+**Key Functions:**
+-   **Semantic Bookmarking:** Saving the current page with rich metadata and tags to the user's Solid Pod.
+-   **Quick Access UI:** A browser toolbar popup that provides access to notifications, chat messages, and core controls.
+-   **Contextual Actions:** The ability to right-click on content on any webpage and interact with it using Webizen modules (e.g., "Share this image with a contact," "Create a task from this text").
+-   **Web Usage Tracking:** With the user's permission, it can track browsing activity to build a private, local history graph.
+
+## Architecture and Communication
+
+The Web Extension operates within the strict security sandbox of the browser. It has no direct access to the file system, P2P networking, or the local Solid Pod. All of its functionality is powered by securely communicating with the background process of the Desktop Application.
+
+<Mermaid chart={`
+graph LR
+    subgraph Browser
+        A[Web Extension UI]
+        B[Extension Background Script]
+    end
+
+    subgraph "Webizen Desktop App"
+        C[Background Process (Local Server)]
+    end
+
+    A -- "UI Events" --> B
+    B -- "Native Messaging / Secure WebSocket" --> C
+    C -- "Responses / Events" --> B
+    B -- "Updates UI" --> A
+
+    style A fill:#cfc,stroke:#333,stroke-width:2px
+    style B fill:#f8c8dc,stroke:#333,stroke-width:2px
+    style C fill:#f9f,stroke:#333,stroke-width:2px
+`} />
+
+1.  **UI Interaction:** When a user interacts with the extension's popup or context menu, the event is handled by the extension's local UI scripts.
+2.  **Background Script:** The UI script sends a message to the extension's own background script.
+3.  **Secure Communication:** The extension's background script then establishes a secure communication channel with the Webizen Desktop App's background process. This is typically done via [Native Messaging](https://developer.chrome.com/docs/extensions/native-messaging/) or a secure WebSocket connection to the local server (`wss://localhost:8080`).
+4.  **API Request:** The message is formatted as a request to the [Webizen Core API](../api-reference/webizen-api). For example, to save a bookmark, it would send a payload to an endpoint like `/bookmarks/add`.
+5.  **Processing:** The Desktop App's background process receives the request, performs the necessary action (e.g., writes to the Quadstore), and sends a response back.
+6.  **UI Update:** The extension's background script receives the response and updates its UI accordingly.
+
+This model ensures that the Web Extension remains lightweight and secure, while still providing powerful functionality by leveraging the capabilities of the full Desktop Application.

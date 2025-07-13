@@ -1,0 +1,41 @@
+# Module: Community
+
+**The Community module provides the infrastructure for fostering and managing the collaborative, open-source community around Webizen. It includes tools for tracking contributions, hosting developer forums, and distributing eCash rewards.**
+
+This module aims to create a self-sustaining ecosystem where contributors are recognized and compensated for their work, directly within the platform they are helping to build.
+
+## Purpose and Functionality
+
+The primary goal of the `community` module is to lower the barrier to contribution and create a positive feedback loop between developers and the project.
+
+**Core Functions:**
+-   **Contribution Tracking:** It provides a system for users to submit contributions of various types, such as code patches, bug reports, documentation updates, and translations for the i18n module. Each contribution is stored as a verifiable RDF entity in the user's Solid Pod.
+-   **Developer Forums:** The module includes a simple, decentralized forum or discussion board where developers can ask questions, discuss features, and collaborate. Forum posts are stored as RDF data and synchronized via the platform's P2P services.
+-   **eCash Rewards:** It integrates tightly with the `cashtab` module to enable the distribution of eCash (XEC) rewards for merged or accepted contributions. This allows the project to run bounty programs and directly compensate community members for their valuable work.
+-   **Contribution History:** Users can view a complete, verifiable history of their contributions and any rewards they have received.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/community/index.js`
+-   **UI Component**: The main interface for submitting contributions and participating in forums is rendered by `src/components/Community.js`.
+-   **Core Libraries**:
+    -   `@cashtab/wallet-lib`: Used via the `cashtab` module for sending eCash rewards.
+-   **Ontology**: `ontologies/community-v1.ttl` defines the RDF schema for contributions, contributors, and forum posts.
+-   **Dependencies**:
+    -   `modules/cashtab`: Essential for sending eCash reward transactions.
+    -   `modules/settings`: To allow users to configure their contribution preferences and eCash address for rewards.
+    -   `modules/i18n`: Contributions can include translations, which are managed by the i18n module.
+    -   `services/solidos`: To save contribution records and forum posts to the user's Solid Pod.
+    -   `services/p2p`: For real-time synchronization of forum discussions.
+
+### Example Flow: Submitting a Translation
+
+1.  A user navigates to the Community UI and selects "Submit Translation."
+2.  The `Community.js` component presents an interface for them to submit a new RDF-based language file (e.g., `locales/es.jsonld`).
+3.  Upon submission, the UI dispatches an event: `eventBus.emit('community:submit_contribution', { type: 'translation', content: {...} })`.
+4.  The `community` module's `handleEvent` function receives the request.
+5.  It creates a new RDF resource describing the contribution, linking it to the user's WebID, and saves it to the user's Solid Pod.
+6.  The contribution is now visible to project maintainers.
+7.  A maintainer reviews the translation. If it is accepted, they trigger a "reward" action.
+8.  This action calls the `community` module, which in turn calls `modules.cashtab.sendTx()` to send a pre-defined eCash bounty to the contributor's registered address.
+9.  The original contribution RDF resource is updated with a link to the reward transaction, creating a permanent, verifiable record of the entire process.

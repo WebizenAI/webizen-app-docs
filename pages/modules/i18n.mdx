@@ -1,0 +1,39 @@
+# Module: Internationalization (i18n)
+
+**The Internationalization (i18n) module is responsible for the localization of the Webizen user interface. It provides the framework for translating all UI text into multiple languages, including support for right-to-left (RTL) scripts like Arabic.**
+
+This module is critical to Webizen's humanitarian goal of being an accessible and inclusive platform for a global audience.
+
+## Purpose and Functionality
+
+The primary goal of the `i18n` module is to dynamically load and apply the correct language translations throughout the application based on user preference.
+
+**Core Functions:**
+-   **Language Management:** It manages a collection of language files for all 15+ supported languages (including Italian, Dutch, German, Spanish, French, Mandarin, Hindi, Japanese, Korean, Bengali, Tamil, Telugu, Portuguese, Quechua, and Arabic).
+-   **Dynamic Loading:** It uses `i18next-http-backend` to dynamically fetch the appropriate language file when the user selects a new language, without requiring an application restart.
+-   **Semantic Language Files:** Unlike traditional JSON translation files, Webizen stores its language resources in a structured, semantic format (`.jsonld`). This allows for richer metadata to be associated with translations.
+-   **RTL Support:** It provides full support for right-to-left (RTL) languages. When an RTL language like Arabic is selected, the module signals to the main UI component to apply the appropriate CSS styles to flip the layout of the entire application.
+-   **Contribution Integration:** It works closely with the `community` module, which allows users to submit new translations as a form of contribution to the project.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/i18n/index.js`
+-   **UI Component**: The language selection dropdown and related UI are part of the `src/components/Settings.js` component, which interacts with this module.
+-   **Core Libraries**:
+    -   `i18next`: The core internationalization framework.
+    -   `i18next-http-backend`: For loading translation files over HTTP.
+-   **Language Files**: Located in `src/locales/` (e.g., `en.jsonld`, `ar.jsonld`).
+-   **Dependencies**:
+    -   `modules/settings`: To get and set the user's current language preference.
+    -   `services/webizen-api`: Specifically the `/i18n/load` endpoint, which this module powers for fetching language packs.
+
+### Example Flow: Changing the Application Language
+
+1.  The user opens the Settings panel and selects "Español" from the language dropdown.
+2.  The `Settings.js` component dispatches an event: `eventBus.emit('i18n:change_language', { lang: 'es' })`.
+3.  The `i18n` module's `handleEvent` function catches this request.
+4.  It uses the `i18next` instance to change the active language to `'es'`.
+5.  The `i18next-http-backend` automatically fetches the `locales/es.jsonld` file from the local server.
+6.  Once the file is loaded, `i18next` emits its own "languageChanged" event.
+7.  All UI components that are subscribed to this event automatically re-render with the new Spanish translations.
+8.  If the selected language was Arabic (`ar`), the `i18n` module would also emit a `ui:set_direction_rtl` event, causing the main application shell to apply RTL-specific CSS styles.

@@ -1,0 +1,43 @@
+# Module: P2P Discovery
+
+**The Discovery module provides the functionality for peer-to-peer content search and discovery within the Webizen ecosystem. It allows users to find resources, files, and other users directly on the decentralized web.**
+
+This module is essential for creating a self-contained ecosystem where content can be found without relying on traditional, centralized search engines.
+
+## Purpose and Functionality
+
+The primary goal of the `discovery` module is to provide a unified search interface over the various P2P protocols used by Webizen.
+
+**Core Functions:**
+-   **Multi-Protocol Search:** It can query multiple decentralized networks simultaneously:
+    -   **WebTorrent:** It searches the WebTorrent network's Distributed Hash Table (DHT) for magnet links matching a search query.
+    -   **IPFS:** It leverages the IPFS DHT and other discovery mechanisms to find content by its CID or metadata.
+-   **Content Indexing (Local):** The module works with the `library` module to build and search a local index of all the content the user has previously accessed or saved, enabling fast, private searching over their own data.
+-   **Federated Search:** The architecture allows for sending search queries to trusted peers or community-run indexer nodes, enabling a federated search model that preserves privacy while expanding search reach.
+
+## Technical Implementation
+
+-   **Module Path**: `src/modules/discovery/index.js`
+-   **UI Component**: The search bar and results view are rendered by `src/components/Discovery.js`.
+-   **Core Libraries**:
+    -   `webtorrent`: For interacting with the WebTorrent DHT.
+    -   `ipfs-http-client`: For querying the IPFS network.
+-   **Dependencies**:
+    -   `modules/library`: To search over the user's local content index.
+    -   `services/webtorrent.js`: The service that manages the WebTorrent client instance.
+    -   `services/ipfs.js`: The service that manages the IPFS node instance.
+    -   `services/webizen-api`: Specifically the `/discovery/search` endpoint, which this module powers.
+
+### Example Flow: Searching for a Resource
+
+1.  A user types a search query, "humanitarian aid distribution models," into the `Discovery.js` component.
+2.  The UI dispatches an event: `eventBus.emit('discovery:search_request', { query: 'humanitarian aid distribution models' })`.
+3.  The `discovery` module's `handleEvent` function receives the request.
+4.  It initiates three search operations in parallel:
+    a.  It sends the query to the `library` module to search the user's local index.
+    b.  It uses the `webtorrent` service to perform a DHT lookup for torrents related to the query.
+    c.  It uses the `ipfs` service to query for CIDs or IPNS records that might match the query (this is a more complex operation and may rely on community indexers).
+5.  As results come in from each source, the `discovery` module emits `discovery:search_result` events containing the found resources (e.g., a local PDF, a WebTorrent magnet link, an IPFS CID).
+6.  The `Discovery.js` component listens for these result events and dynamically populates the search results view, indicating the source of each result.
+
+This multi-pronged approach ensures that users can find content both within their own trusted data stores and across the broader P2P network.
