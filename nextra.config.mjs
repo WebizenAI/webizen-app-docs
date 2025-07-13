@@ -1,4 +1,4 @@
 export default {
   theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.jsx'
-}
+  themeConfig: './theme.config.mjs'
+};

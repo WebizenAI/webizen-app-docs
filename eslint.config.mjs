@@ -9,6 +9,18 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [...compat.extends("next/core-web-vitals")];
+import nextPlugin from 'eslint-config-next';
+import mdxPlugin from 'eslint-plugin-mdx';
+import reactPlugin from 'eslint-plugin-react';
+
+const eslintConfig = [
+  ...nextPlugin,
+  {
+    plugins: { mdx: mdxPlugin, react: reactPlugin },
+    rules: { 'react/prop-types': 'off' },
+    settings: { react: { version: 'detect' } }
+  },
+  { files: ['**/*.mdx'], languageOptions: { parser: mdxPlugin.parser } }
+];
 
 export default eslintConfig;
