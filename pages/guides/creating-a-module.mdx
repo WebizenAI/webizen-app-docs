@@ -1,0 +1,190 @@
+
+# Guide: Creating a Webizen Module
+
+This guide will walk you through the process of creating a new module for Webizen. Modules are the primary way to extend the platform with new features and functionality. By the end of this tutorial, you will have built a simple "Greeter" module that displays a message and interacts with the rest of the system via the event bus.
+
+---
+
+## Prerequisites
+
+Before you start, you should have a working local development environment. If you haven't set one up yet, please follow the **[Installation Guide](../getting-started/installation)**.
+
+You should also be familiar with the core concepts of:
+
+- [Webizen Architecture](../core-concepts/architecture)
+- [Modular System](../core-concepts/modules)
+
+---
+
+## Step 1: Scaffold the Module Directory
+
+First, create a new directory for your module inside the `src/modules/` directory. For this tutorial, we'll call it `greeter`.
+
+```bash
+mkdir src/modules/greeter
+```
+
+Inside this new directory, create the following files:
+
+- `index.js`: This will contain the core logic of your module.
+- `component.js`: This will be the main React component for your module's UI.
+- `ontology.ttl`: An RDF file to define the data model for your module.
+
+Your file structure should look like this:
+
+```text
+src/
+└── modules/
+    └── greeter/
+        ├── component.js
+        ├── index.js
+        └── ontology.ttl
+```
+
+---
+
+## Step 2: Write the Core Module Logic
+
+Open `src/modules/greeter/index.js` and add the following code. This file implements the standard module interface (`init`, `handleEvent`, `getData`).
+
+```javascript
+// src/modules/greeter/index.js
+
+let eventBus;
+let greeting = "Hello, World!";
+
+// init() is called by the Module Manager on startup.
+// It receives core services via dependency injection.
+export function init(services) {
+  console.log('Greeter Module Initialized');
+  eventBus = services.eventBus;
+}
+
+// handleEvent() is the entry point for events from the event bus.
+export function handleEvent(event) {
+  if (event.type === 'greeter:change_greeting') {
+    greeting = event.payload.newGreeting;
+    // Emit an event to notify the system that our data has changed.
+    eventBus.emit('greeter:updated', { greeting });
+  }
+}
+
+// getData() allows other parts of the system to request data from this module.
+export function getData(query) {
+  if (query.type === 'get_greeting') {
+    return greeting;
+  }
+  return null;
+}
+```
+
+This simple logic initializes the module, provides a way to get the current greeting, and defines how to handle an event to change that greeting.
+
+---
+
+## Step 3: Create the UI Component
+
+Next, let's create the user interface for our module. Open `src/modules/greeter/component.js` and add the following React component.
+
+```javascript
+// src/modules/greeter/component.js
+
+import React, { useState, useEffect } from 'react';
+
+// Assume 'webizen' is a global object that provides access to the API.
+const { eventBus, modules } = window.webizen;
+
+export function GreeterComponent() {
+  const [greeting, setGreeting] = useState('');
+
+  useEffect(() => {
+    // Fetch the initial data from our module
+    const initialGreeting = modules.getData('greeter', { type: 'get_greeting' });
+    setGreeting(initialGreeting);
+
+    // Define a handler for when the greeting is updated
+    const handleUpdate = (event) => {
+      setGreeting(event.payload.greeting);
+    };
+
+    // Listen for the 'greeter:updated' event
+    eventBus.on('greeter:updated', handleUpdate);
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      eventBus.off('greeter:updated', handleUpdate);
+    };
+  }, []);
+
+  const changeGreeting = () => {
+    const newGreeting = `Hello from Webizen! (Time: ${new Date().toLocaleTimeString()})`;
+    // Dispatch an event to the module system to change the greeting
+    eventBus.emit('greeter:change_greeting', { newGreeting });
+  };
+
+  return (
+    <div className="p-4 border rounded-lg">
+      <h2 className="text-xl font-bold">Greeter Module</h2>
+      <p className="mt-2 text-lg">{greeting}</p>
+      <button
+        onClick={changeGreeting}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Change Greeting
+      </button>
+    </div>
+  );
+}
+```
+
+This component fetches the initial greeting from our module's `getData` function, listens for updates via the event bus, and provides a button to dispatch an event to change the greeting.
+
+---
+
+## Step 4: Define the Ontology
+
+Even for a simple module, it's good practice to define its data model. Open `src/modules/greeter/ontology.ttl` and add the following:
+
+```turtle
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix greeter: <http://webizen.org/ontologies/greeter-v1#> .
+
+greeter:Greeting a rdfs:Class ;
+    rdfs:label "Greeting" ;
+    rdfs:comment "Represents a greeting message within the Greeter module." .
+
+greeter:hasText a rdf:Property ;
+    rdfs:label "has text" ;
+    rdfs:domain greeter:Greeting ;
+    rdfs:range rdfs:Literal .
+```
+
+This defines a simple vocabulary for our module's data.
+
+---
+
+## Step 5: Register and View the Module
+
+**Register the Module:** The Module Manager will automatically discover your new `greeter` directory. To activate it, you would typically add it to a configuration file or enable it via a settings UI. For now, we'll assume it's loaded by default.
+
+**Render the Component:** To see your component, you would import it into one of the main UI files (e.g., `src/components/MainWindow.js`) and render it:
+
+```javascript
+import { GreeterComponent } from '../modules/greeter/component';
+
+// ... inside your main component's render method
+<GreeterComponent />
+```
+
+**Run Webizen:**
+
+```bash
+npm start
+```
+
+You should now see your "Greeter" module in the main application window. Clicking the button will update the greeting text, demonstrating the full lifecycle: UI Event -> Event Bus -> Module Logic -> Event Bus -> UI Update.
+
+---
+
+Congratulations! You've successfully created your first Webizen module. You can now use this pattern to build more complex features and integrations.

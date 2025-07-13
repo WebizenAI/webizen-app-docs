@@ -1,4 +1,15 @@
 {
   "index": "Home",
-  "docs": { "title": "Documentation", "type": "page" }
+  "introduction": { "title": "Introduction", "type": "directory" },
+  "getting-started": { "title": "Getting Started", "type": "directory" },
+  "core-concepts": { "title": "Core Concepts", "type": "directory" },
+  "guides": { "title": "Guides", "type": "directory" },
+  "modules": { "title": "Modules", "type": "directory" },
+  "api-reference": { "title": "API Reference", "type": "directory" },
+  "cryptography": { "title": "Cryptography", "type": "directory" },
+  "deployment": { "title": "Deployment", "type": "directory" },
+  "platforms": { "title": "Platforms", "type": "directory" },
+  "semantic-web": { "title": "Semantic Web", "type": "directory" },
+  "contributing": { "title": "Contributing", "type": "directory" },
+  "support": { "title": "Support", "type": "directory" }
 }
