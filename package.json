@@ -1,4 +1,6 @@
-{
+export default {
+  theme: 'nextra-theme-docs'
+}{
   "name": "webizen-app-docs",
   "version": "0.1.0",
   "private": true,
@@ -12,8 +14,8 @@
     "next": "15.3.5",
     "nextra": "^4.2.17",
     "nextra-theme-docs": "^4.2.17",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

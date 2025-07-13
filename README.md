@@ -48,3 +48,5 @@ This guide is for developers who want to get the project running locally. For mo
 Webizen is a community-driven project, and we welcome contributions of all kinds. Whether you're a developer, a designer, a writer, or just passionate about the future of the web, there are many ways to get involved.
 
 Please read our [**Contribution Guidelines**](https://www.google.com/search?q=https://github.com/WebizenAI/webizen-dev/blob/main/CONTRIBUTING.md) to get started.
+
+### Dev Link: https://gemini.google.com/share/20f692890737 
