@@ -67,13 +67,6 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build static site with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
-      # For GitHub Pages, move all static export files into out/webizen-app-docs/
-      # For local preview, DO NOT run this step—just serve from 'out' and open /webizen-app-docs/
-      - name: Move static export into subfolder for GitHub Pages
-        run: |
-          mkdir -p out/webizen-app-docs
-          shopt -s extglob
-          mv out/!(webizen-app-docs) out/webizen-app-docs/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
