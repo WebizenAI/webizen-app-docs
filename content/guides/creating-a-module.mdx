@@ -1,0 +1,38 @@
+# Guide: Creating a Webizen Module
+
+This guide will walk you through the process of creating a new module for Webizen. Modules are the primary way to extend the platform with new features and functionality. By the end of this tutorial, you will have built a simple "Greeter" module that displays a message and interacts with the rest of the system via the event bus.
+
+---
+
+## Prerequisites
+
+Before you start, you should have a working local development environment. If you haven't set one up yet, please follow the **[Installation Guide](../getting-started/installation)**.
+
+You should also be familiar with the core concepts of:
+
+- [Webizen Architecture](../core-concepts/architecture)
+- [Modular System](../core-concepts/modules)
+
+---
+
+## Step 1: Scaffold the Module Directory
+
+First, create a new directory for your module inside the `src/modules/` directory. For this tutorial, we'll call it `greeter`.
+
+```bash
+mkdir src/modules/greeter
+```
+
+Inside this new directory, create the following files:
+
+- `index.js`: This will contain the core logic of your module.
+- `component.js`: This will be the main React component for your module's UI.
+- `ontology.ttl`: An RDF file to define the data model for your module.
+
+Your file structure should look like this:
+
+```text
+src/
+└── modules/
+    └── greeter/
+```
