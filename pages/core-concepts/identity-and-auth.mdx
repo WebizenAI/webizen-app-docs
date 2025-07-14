@@ -1,6 +1,4 @@
-export const type = "page"
-export const title = "Identity & Authentication in Webizen"
-import { Mermaid } from 'nextra/components'
+
 
 # Identity & Authentication in Webizen
 
@@ -18,11 +16,7 @@ In the traditional web, your identity is defined by the platforms you use (e.g.,
 
 This diagram illustrates the agent-centric model, where a user's core identity is composed of various constituents, and different "views" of that identity are presented to different parties based on permissions.
 
-<Mermaid chart={`
-graph TD
-    subgraph "User's Identity Fabric (in Solid Pod)"
-        A[Core WebID]
-        B[Profile Data (Name, Bio)]
+{/** Mermaid diagram removed: not supported in Nextra v2 */}
         C[Verifiable Credential: University Degree]
         D[Verifiable Credential: Professional License]
         E[eCash Address]

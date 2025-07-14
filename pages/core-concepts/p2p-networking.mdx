@@ -1,6 +1,4 @@
-export const type = "page"
-export const title = "P2P Networking in Webizen"
-import { Mermaid } from 'nextra/components'
+
 
 # P2P Networking in Webizen
 
@@ -12,17 +10,7 @@ Our P2P stack is not monolithic; it uses different technologies for different ta
 
 This diagram shows the primary P2P protocols and how they relate to different application features.
 
-<Mermaid chart={`
-graph TD
-    subgraph "Application Features"
-        A[Real-time Chat & Collaboration]
-        B[Large File & Media Sharing]
-        C[Secure Device-to-Device Sync]
-    end
-
-    subgraph "P2P Protocols"
-        D[GUN.eco]
-        E[WebTorrent]
+{/** Mermaid diagram removed: not supported in Nextra v2 */}
         F[Tailscale (WireGuard)]
         G[WebRTC]
     end

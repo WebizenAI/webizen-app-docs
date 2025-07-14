@@ -1,6 +1,4 @@
-export const type = "page"
-export const title = "Webizen Architecture"
-import { Mermaid } from 'nextra/components'
+
 
 # Webizen Architecture
 
@@ -12,17 +10,7 @@ At a high level, the architecture is divided into three main layers: the **Backg
 
 The following diagram illustrates the relationship between these core components and their interaction with external services.
 
-<Mermaid chart={`
-graph TD
-    subgraph User's Device
-        subgraph "Webizen Desktop Application"
-            A[Background Process (Node.js)]
-            B[Foreground UI (Electron Window)]
-        end
-        subgraph "Userland Applications"
-            C[Local Apps (in Webviews)]
-            D[Web Extension (in Browser)]
-        end
+{/** Mermaid diagram removed: not supported in Nextra v2 */}
     end
 
     subgraph "Decentralized & External Services"

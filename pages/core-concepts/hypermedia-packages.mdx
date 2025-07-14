@@ -1,6 +1,4 @@
-export const type = "page"
-export const title = "Hypermedia Content Packages"
-import { Mermaid } from 'nextra/components'
+
 
 # Hypermedia Content Packages
 
@@ -16,13 +14,7 @@ This approach transforms static documents into dynamic, multi-layered experience
 
 A Hypermedia Content Package is a compressed archive (typically a `.zip` or `.hdf5` file) that contains a well-defined set of assets:
 
-<Mermaid chart={`
-graph TD
-    subgraph "Hypermedia Content Package (e.g., my_research.zip)"
-        A[manifest.rdf]
-        subgraph "Assets"
-            B[Linear Media (video.mp4, audio.mp3)]
-            C[Non-Linear Media (subtitles.vtt, document.html)]
+{/** Mermaid diagram removed: not supported in Nextra v2 */}
             D[Data & Code (dataset.csv, analysis.py)]
             E[Semantic Data (ontology.ttl, agreement.rdf)]
             F[Applications (viewer_app.js)]

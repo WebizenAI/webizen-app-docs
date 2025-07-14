@@ -2,12 +2,10 @@ import nextra from 'nextra';
 
 const withNextra = nextra({
   theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.tsx',
 });
 
-export default withNextra();const withNextra = require('nextra')({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.tsx',
-})
-
-module.exports = withNextra()
+export default withNextra({
+  output: 'export',
+  images: { unoptimized: true },
+  // Optionally add basePath and assetPrefix for GitHub Pages if needed
+});

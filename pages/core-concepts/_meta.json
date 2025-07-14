@@ -1,0 +1,8 @@
+{
+  "architecture": { "title": "Architecture" },
+  "data-storage": { "title": "Data Storage" },
+  "hypermedia-packages": { "title": "Hypermedia Packages" },
+  "identity-and-auth": { "title": "Identity & Auth" },
+  "modules": { "title": "Modules" },
+  "p2p-networking": { "title": "P2P Networking" }
+}

@@ -1,6 +1,4 @@
-export const type = "page"
-export const title = "Data Storage in Webizen"
-import { Mermaid } from 'nextra/components'
+
 
 # Data Storage in Webizen
 
@@ -12,34 +10,7 @@ The three primary storage layers are: **Quadstore**, **Solid Pods**, and **IPFS*
 
 This diagram illustrates how data flows between the different storage layers and the application's background process.
 
-<Mermaid chart={`
-graph TD
-    subgraph "Webizen Desktop Application"
-        A[Background Process]
-    end
-
-    subgraph "Local High-Performance Cache"
-        B[Quadstore (IndexedDB)]
-    end
-
-    subgraph "User-Owned Authoritative Storage"
-        C[Solid Pod (Local or Remote)]
-    end
-
-    subgraph "Decentralized File Storage"
-        D[IPFS Network]
-    end
-
-    A -- "Fast Queries & Caching" <--> B
-    A -- "Persist & Sync" <--> C
-    A -- "Store/Retrieve Files" <--> D
-    C -- "Contains Pointers (CIDs) to" --> D
-
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#f8c8dc,stroke:#333,stroke-width:2px
-    style C fill:#a7c7e7,stroke:#333,stroke-width:2px
-    style D fill:#c1e1c1,stroke:#333,stroke-width:2px
-`} />
+{/** Mermaid diagram removed: not supported in Nextra v2 */}
 
 ### 1. Quadstore: The High-Speed Local Cache
 
