@@ -9,6 +9,8 @@ const withNextra = nextra({
 
 export default withNextra({
   output: 'export',
+  basePath: '/webizen-app-docs',
+  assetPrefix: '/webizen-app-docs',
   images: {
     unoptimized: true,
   },

@@ -38,5 +38,10 @@
     "step": 8,
     "action": "Inspected gh-pages branch directly, confirmed correct Nextra static output and index.html present.",
     "result": "No further code-side fixes possible; only GitHub Pages settings update remains. User must set Pages source to gh-pages branch, root folder."
+  },
+  {
+    "step": 9,
+    "action": "Site is now serving Nextra output, but user reports errors.",
+    "result": "Request user to provide error details (browser console, network tab, or visible error messages) for further autonomous debugging."
   }
 ]
