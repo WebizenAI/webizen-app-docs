@@ -1,0 +1,82 @@
+export const type = "page"
+export const title = "SolidOS Service API Reference"
+# SolidOS Service API Reference
+
+The SolidOS Service (`services/solidos.js`) provides a high-level interface for interacting with a user's Solid Pod. As the user's Pod is their authoritative source of truth, this service is fundamental for any module that needs to persist data in a sovereign and interoperable manner.
+
+**Note:** This service runs exclusively in the privileged **background process**. Modules do not interact with it directly but make requests through the secure [Webizen Core API](./webizen-api), which then calls this service's functions.
+
+## Core Design Principles
+
+-   **Abstraction:** The service provides a simplified API over the powerful but complex `@inrupt/solid-client` libraries. This makes common operations like fetching and saving RDF data much more straightforward for module developers.
+-   **Authentication Aware:** The service automatically handles the authenticated session with the user's Solid Pod. All requests made through this service are authenticated using the user's WebID credentials.
+-   **Resource-Oriented:** The API is designed around the concept of "Resources" in Solid, which can be either RDF documents (Datasets) or binary files.
+
+---
+
+## Key Functions for RDF Data
+
+These functions are used for creating, reading, updating, and deleting structured RDF data (e.g., profiles, contacts, agreements).
+
+### `getDataset(resourceUrl)`
+
+Fetches an RDF resource (a "Dataset") from a Solid Pod.
+
+-   **Description**: Retrieves the RDF triples contained within a specific resource URL.
+-   **Parameters**:
+    -   `resourceUrl` (string): The full URL of the RDF resource to fetch (e.g., `https://alice.pod.example/profile/card`).
+-   **Returns**: `Promise<Dataset>` - A Solid-Client [Dataset](https://docs.inrupt.com/developer-tools/javascript/client-libraries/reference/glossary/#term-SolidDataset) object, which is a collection of RDF Quads.
+
+### `saveDatasetAt(resourceUrl, dataset)`
+
+Saves or overwrites an RDF resource in a Solid Pod.
+
+-   **Description**: Writes a Dataset to the specified URL. If the resource already exists, it will be overwritten. If it does not exist, it will be created.
+-   **Parameters**:
+    -   `resourceUrl` (string): The full URL where the resource should be saved.
+    -   `dataset` (Dataset): The Solid-Client Dataset object to save.
+-   **Returns**: `Promise<Dataset>` - The saved Dataset object as confirmed by the Pod.
+
+### `deleteResource(resourceUrl)`
+
+Deletes a resource (either an RDF file or a binary file) from a Solid Pod.
+
+-   **Description**: Permanently removes the specified resource.
+-   **Parameters**:
+    -   `resourceUrl` (string): The URL of the resource to delete.
+-   **Returns**: `Promise<void>`
+
+---
+
+## Key Functions for Containers and Files
+
+These functions are used for managing collections of resources (Containers) and non-RDF files.
+
+### `getContainedResourceUrls(containerUrl)`
+
+Lists the URLs of all resources within a Solid Container.
+
+-   **Description**: Fetches the contents of a directory-like Container in a Solid Pod.
+-   **Parameters**:
+    -   `containerUrl` (string): The URL of the Container (must end with a `/`).
+-   **Returns**: `Promise<string[]>` - An array of URLs for all files and sub-containers within the specified container.
+
+### `getFile(fileUrl)`
+
+Fetches a non-RDF, binary file from a Solid Pod.
+
+-   **Description**: Retrieves any kind of file, such as an image, video, or PDF.
+-   **Parameters**:
+    -   `fileUrl` (string): The URL of the file to fetch.
+-   **Returns**: `Promise<Blob>` - A Blob object containing the file's binary data and content type.
+
+### `overwriteFile(fileUrl, fileBlob)`
+
+Uploads or overwrites a binary file in a Solid Pod.
+
+-   **Description**: Writes a file to the specified URL. This is used for storing assets like profile pictures or attachments.
+-   **Parameters**:
+    -   `fileUrl` (string): The full URL where the file should be saved.
+    -   `fileBlob` (Blob): The file content as a Blob object.
+-   **Returns**: `Promise<void>`
+

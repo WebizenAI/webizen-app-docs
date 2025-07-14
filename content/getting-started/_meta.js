@@ -1,1 +1,3 @@
-// ...existing code from docs/getting-started/_meta.js...
+export default {
+  "installation": { title: "Installation" }
+};

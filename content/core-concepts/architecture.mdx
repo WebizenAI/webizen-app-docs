@@ -1,0 +1,86 @@
+export const type = "page"
+export const title = "Webizen Architecture"
+import { Mermaid } from 'nextra/components'
+
+# Webizen Architecture
+
+The Webizen platform is designed with a robust, multi-process architecture to ensure security, stability, and performance. This model separates privileged operations from the user interface and sandboxes third-party applications, creating a secure environment for a decentralized operating system.
+
+At a high level, the architecture is divided into three main layers: the **Background Process**, the **Foreground (UI) Process**, and the **Userland (Application) Layer**.
+
+### Architectural Diagram
+
+The following diagram illustrates the relationship between these core components and their interaction with external services.
+
+<Mermaid chart={`
+graph TD
+    subgraph User's Device
+        subgraph "Webizen Desktop Application"
+            A[Background Process (Node.js)]
+            B[Foreground UI (Electron Window)]
+        end
+        subgraph "Userland Applications"
+            C[Local Apps (in Webviews)]
+            D[Web Extension (in Browser)]
+        end
+    end
+
+    subgraph "Decentralized & External Services"
+        E[Solid Pod]
+        F[IPFS Network]
+        G[eCash Network (Chronik)]
+        H[GUN.eco Relays]
+        I[WebTorrent Trackers/Peers]
+        J[WebID/DNSSEC]
+    end
+
+    A -- "Internal RPC API" --> B
+    A -- "Secure Localhost Server" --> C
+    D -- "Extension Messaging" --> A
+    B -- "Controls" --> C
+    
+    A -- "HTTPS/WSS/P2P" --> E
+    A -- "P2P" --> F
+    A -- "HTTPS" --> G
+    A -- "WSS" --> H
+    A -- "P2P" --> I
+    A -- "HTTPS/DNS" --> J
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#ccf,stroke:#333,stroke-width:2px
+    style C fill:#cfc,stroke:#333,stroke-width:2px
+    style D fill:#cfc,stroke:#333,stroke-width:2px
+`} />
+
+### Layers Explained
+
+#### 1. Background Process (`bg`)
+
+The background process is the heart of the Webizen Desktop Application. It runs as a privileged Node.js process, giving it access to the user's file system and the ability to make network requests.
+
+- **Responsibilities**:
+    - Managing the local Solid Pod and Quadstore database.
+    - Handling all P2P networking (IPFS, WebTorrent, GUN.eco).
+    - Executing all cryptographic operations (signing, encryption).
+    - Running the local HTTPS server and exposing the **Webizen API** over secure WebSockets.
+    - Interacting with external services like the eCash network.
+- **Security**: This process is the only part of the application with direct access to sensitive user keys and system resources. All interactions with it are mediated through a strict API.
+
+#### 2. Foreground (UI) Process (`fg`)
+
+This is the main window of the Webizen Desktop Application that the user interacts with. It's an Electron-based Chromium window.
+
+- **Responsibilities**:
+    - Rendering the main user interface, including the sidebar, settings, and core application views.
+    - Communicating with the background process via the secure internal RPC API to request data and trigger actions.
+    - Managing and displaying userland applications within sandboxed `<webview>` tags.
+- **Security**: The foreground process has no direct access to the file system or sensitive keys. It operates as a standard web page, with its capabilities restricted to what the background process exposes through the API.
+
+#### 3. Userland (Application) Layer
+
+This layer consists of all applications that run within the Webizen environment.
+
+- **Local Apps**: These are Solid or Webizen-specific applications hosted by the local server in the Desktop App and rendered in sandboxed `<webview>` tags. They interact with the user's data exclusively through the `window.webizen` API provided by the background process, which enforces permissions.
+- **Web Extension**: The browser extension provides a subset of Webizen's functionality. It communicates with the Desktop App's background process to access the user's data and the P2P network, acting as a remote client to the user's own local server.
+
+This layered architecture ensures that even if a userland application or the UI process is compromised, the core user data and keys managed by the background process remain secure.

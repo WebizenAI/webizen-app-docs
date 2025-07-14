@@ -1,1 +1,4 @@
-// ...existing code from docs/introduction/_meta.js...
+export default {
+  "index": { title: "Welcome" },
+  "overview": { title: "Overview" }
+};

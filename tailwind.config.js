@@ -1,6 +1,6 @@
 export default {
   content: [
-    './pages/**/*.{js,jsx,md,mdx}',
+    './content/**/*.{js,jsx,md,mdx}',
     './components/**/*.{js,jsx}',
     './theme.config.mjs'
   ],

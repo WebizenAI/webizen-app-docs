@@ -1,1 +1,4 @@
-// ...existing code from docs/contributing/_meta.js...
+export default {
+  "code-of-conduct": { title: "Contributor Code of Conduct" },
+  "guidelines": { title: "Contribution Guidelines" }
+};

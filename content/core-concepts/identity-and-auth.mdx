@@ -1,0 +1,80 @@
+export const type = "page"
+export const title = "Identity & Authentication in Webizen"
+import { Mermaid } from 'nextra/components'
+
+# Identity & Authentication in Webizen
+
+Webizen fundamentally re-imagines digital identity. Instead of a username and password for every service, your identity is a rich, self-owned, and multifaceted construct that you control. This approach moves from a platform-centric model to a truly **agent-centric** model, where you, the user (the "agent"), are at the center of your digital existence.
+
+## The Agent-Centric Identity Model
+
+In the traditional web, your identity is defined by the platforms you use (e.g., your Google account, your X profile). In Webizen, **your identity is defined by you**. It is not a single, monolithic profile but a "fabric" woven from a series of individual, verifiable claims and attributes.
+
+- **You are the authority:** You define your own attributes, from your name and contact information to your professional affiliations and personal interests.
+- **Contextual Disclosure:** You don't have to present the same identity to everyone. Webizen's permission structures allow you to reveal different facets, or "constituents," of your identity to different people, applications, and services. You might present a professional persona to colleagues and a personal one to friends, all from the same underlying identity framework.
+- **Authentication of Constituents:** Each piece of your identity can be an authenticated "constituent." Your email can be verified, your credentials can be cryptographically signed, and your control over an eCash address can be proven. Authentication in Webizen is the process of proving control over this fabric of identity claims.
+
+### The Identity Fabric Explained
+
+This diagram illustrates the agent-centric model, where a user's core identity is composed of various constituents, and different "views" of that identity are presented to different parties based on permissions.
+
+<Mermaid chart={`
+graph TD
+    subgraph "User's Identity Fabric (in Solid Pod)"
+        A[Core WebID]
+        B[Profile Data (Name, Bio)]
+        C[Verifiable Credential: University Degree]
+        D[Verifiable Credential: Professional License]
+        E[eCash Address]
+        F[Social Connections]
+        G[Private Photos]
+    end
+
+    A --- B & C & D & E & F & G
+
+    subgraph "Contextual Views (Permissions)"
+        subgraph "View for 'Colleague'"
+            direction LR
+            V1_A[WebID]
+            V1_B[Profile: Name, Title]
+            V1_D[VC: Professional License]
+        end
+        subgraph "View for 'Friend'"
+            direction LR
+            V2_A[WebID]
+            V2_B[Profile: Name, Nickname]
+            V2_F[Social Connections]
+            V2_G[Private Photos]
+        end
+        subgraph "View for 'Public Forum'"
+            direction LR
+            V3_A[WebID]
+            V3_B[Profile: Pseudonym]
+        end
+    end
+
+    User(User Agent) -- "Grants Permission" --> V1_A & V2_A & V3_A
+    
+    Colleague -- "Requests Access" --> User
+    Friend -- "Requests Access" --> User
+    PublicForum[Public Forum] -- "Requests Access" --> User
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+`} />
+
+## Core Identity & Authentication Technologies
+
+Webizen uses a suite of open standards to make this agent-centric model a reality.
+
+- **WebID:** Your universal, decentralized identifier. It's a URL that points to your profile document, which contains your public keys and links to other parts of your identity fabric. Because you control where your WebID document is hosted, you can never be de-platformed.
+
+- **Solid Pods:** Your personal data store. All your identity constituentsyour profile data, your credentials, your contacts, your photosare stored as linked data (RDF) in your Solid Pod. You have ultimate control over who can read from and write to it.
+
+- **WebAuthn:** The W3C standard for secure, passwordless authentication. Webizen uses WebAuthn to allow you to authenticate using hardware security keys (like a YubiKey) or your device's biometrics (like Face ID or a fingerprint scanner). This provides the strongest possible, phishing-resistant security for proving control over your identity.
+
+- **WebID-TLS:** An advanced authentication mechanism that uses a client certificate, cryptographically linked to your WebID, during the TLS handshake. This provides strong authentication at the transport layer itself, proving to a server that you are who you say you are without needing a password.
+
+- **ADP (Authenticated Data Protocol) & BIP39:** For linking your WebID to other identifiers, like an eCash address, and for providing a mnemonic-based recovery mechanism for your identity keys.
+
+By combining these technologies, Webizen creates a powerful, flexible, and secure identity system that puts you back in control.
+

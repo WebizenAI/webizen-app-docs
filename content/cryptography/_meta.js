@@ -1,1 +1,3 @@
-// ...existing code from docs/cryptography/_meta.js...
+export default {
+  "specification": { title: "Cryptography Specification and Policy" }
+};
