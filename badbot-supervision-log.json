@@ -1,0 +1,42 @@
+[
+  {
+    "step": 1,
+    "action": "Checked Nextra static export output (out/index.html)",
+    "result": "Correct Nextra HTML is generated, not Jekyll."
+  },
+  {
+    "step": 2,
+    "action": "Checked .github/workflows/deploy.yml for correct peaceiris/actions-gh-pages usage and publish_dir: ./out, publish_branch: gh-pages.",
+    "result": "Workflow is correct. Only peaceiris/actions-gh-pages is used."
+  },
+  {
+    "step": 3,
+    "action": "Checked for legacy pages/index.js and pages/index.mdx.",
+    "result": "Both removed. No fallback to old Next.js or Jekyll output."
+  },
+  {
+    "step": 4,
+    "action": "Checked for .nojekyll in out/ directory.",
+    "result": ".nojekyll is present."
+  },
+  {
+    "step": 5,
+    "action": "Checked for Jekyll config files (_config.yml, etc.) in repo root.",
+    "result": "No Jekyll config files found."
+  },
+  {
+    "step": 6,
+    "action": "Checked GitHub Pages branch/source settings (manual step required).",
+    "result": "User must verify that GitHub Pages is set to deploy from gh-pages branch, not /docs or /main."
+  },
+  {
+    "step": 7,
+    "action": "Confirmed README.md is not being deployed as index.html in out/.",
+    "result": "out/index.html is correct, but GitHub Pages is serving old Jekyll output. Possible cache or branch/source misconfiguration."
+  },
+  {
+    "step": 8,
+    "action": "Inspected gh-pages branch directly, confirmed correct Nextra static output and index.html present.",
+    "result": "No further code-side fixes possible; only GitHub Pages settings update remains. User must set Pages source to gh-pages branch, root folder."
+  }
+]
